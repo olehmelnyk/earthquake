@@ -1,4 +1,5 @@
 import styles from './ui.module.css';
+import { Button } from './Button/Button';
 
 export function Ui() {
   return (
@@ -9,3 +10,6 @@ export function Ui() {
 }
 
 export default Ui;
+
+export { Button };
+export * from './Button/Button';
