@@ -23,4 +23,7 @@ model Earthquake {
   @@index([date])
   @@index([magnitude])
   @@index([location])
+
+  // Add unique constraint to prevent duplicate earthquakes
+  @@unique([location, magnitude, date], name: "earthquake_location_magnitude_date_unique")
 }

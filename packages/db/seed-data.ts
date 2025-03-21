@@ -73,8 +73,10 @@ async function importEarthquakesFromCSV(filePath: string): Promise<ValidationSum
         continue;
       }
 
-      // Format the location as "latitude, longitude"
-      const location = `${parseFloat(latitude)}, ${parseFloat(longitude)}`;
+      // Format the location as "latitude, longitude" with 3 decimal places
+      const roundedLat = parseFloat(parseFloat(latitude).toFixed(3));
+      const roundedLong = parseFloat(parseFloat(longitude).toFixed(3));
+      const location = `${roundedLat}, ${roundedLong}`;
 
       // Parse date - format is "YYYY/MM/DD HH:MM:SS.SS"
       let date: Date;
