@@ -1,7 +1,7 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { typeDefs, resolvers } from '@earthquake/graphql';
-import { prisma } from '@earthquake/db';
+import { typeDefs, resolvers } from '@earhquake/graphql';
+import { prisma } from '@earhquake/db';
 
 const host = process.env['HOST'] ?? 'localhost';
 const port = process.env['PORT'] ? Number(process.env['PORT']) : 3333;
