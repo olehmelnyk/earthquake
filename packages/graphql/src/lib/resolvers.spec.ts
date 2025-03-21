@@ -41,7 +41,7 @@ describe('GraphQL Resolvers', () => {
 
   describe('Query', () => {
     it('should get all earthquakes', async () => {
-      const mockEarthquakes = [{ id: '1', location: 'Tokyo', magnitude: 5.5, date: new Date() }];
+      const mockEarthquakes = [{ id: '1', location: '43.584, -127.638', magnitude: 5.5, date: new Date() }];
       earthquakeMethods.findMany.mockResolvedValue(mockEarthquakes);
 
       const result = await resolvers.Query.earthquakes(undefined, {}, context);
@@ -51,7 +51,7 @@ describe('GraphQL Resolvers', () => {
     });
 
     it('should get earthquake by ID', async () => {
-      const mockEarthquake = { id: '1', location: 'Tokyo', magnitude: 5.5, date: new Date() };
+      const mockEarthquake = { id: '1', location: '43.584, -127.638', magnitude: 5.5, date: new Date() };
       earthquakeMethods.findUnique.mockResolvedValue(mockEarthquake);
 
       const result = await resolvers.Query.earthquake(undefined, { id: '1' }, context);
@@ -68,7 +68,7 @@ describe('GraphQL Resolvers', () => {
       const mockDate = '2023-01-01T00:00:00Z';
       const mockEarthquake = {
         id: '1',
-        location: 'Tokyo',
+        location: '43.584, -127.638',
         magnitude: 5.5,
         date: new Date(mockDate),
       };
@@ -77,13 +77,13 @@ describe('GraphQL Resolvers', () => {
 
       const result = await resolvers.Mutation.addEarthquake(
         undefined,
-        { location: 'Tokyo', magnitude: 5.5, date: mockDate },
+        { location: '43.584, -127.638', magnitude: 5.5, date: mockDate },
         context
       );
 
       expect(earthquakeMethods.create).toHaveBeenCalledWith({
         data: {
-          location: 'Tokyo',
+          location: '43.584, -127.638',
           magnitude: 5.5,
           date: expect.any(Date),
         },
@@ -94,7 +94,7 @@ describe('GraphQL Resolvers', () => {
     it('should update an earthquake', async () => {
       const mockEarthquake = {
         id: '1',
-        location: 'Tokyo Updated',
+        location: '43.584, -127.638',
         magnitude: 6.0,
         date: new Date(),
       };
@@ -103,14 +103,14 @@ describe('GraphQL Resolvers', () => {
 
       const result = await resolvers.Mutation.updateEarthquake(
         undefined,
-        { id: '1', location: 'Tokyo Updated', magnitude: 6.0 },
+        { id: '1', location: '43.584, -127.638', magnitude: 6.0 },
         context
       );
 
       expect(earthquakeMethods.update).toHaveBeenCalledWith({
         where: { id: '1' },
         data: expect.objectContaining({
-          'location': 'Tokyo Updated',
+          'location': '43.584, -127.638',
           'magnitude': 6.0,
         }),
       });
