@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as csvParser from 'csv-parser';
+import csvParser from 'csv-parser';
 import { prisma } from './database';
 import { z } from 'zod';
 

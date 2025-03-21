@@ -1,2 +1,2 @@
-- [ ] fix typo in project-name: `earhquake` -> `earthquake`
+- [ ] prevent issues with timezones in DB and UI
 - [ ] for `ui` package - can we use NextJS instead of react? and lets add storybook there; also we would be able to import NextJS configs to web app (if we have i18n, or something else) and other configs - like tailwind; also would be able to test in storybook with NextJS Image and Link, etc.
