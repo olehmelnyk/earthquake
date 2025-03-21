@@ -15,10 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@earthquake/db": ["packages/db/src/index.ts"],
-      "@earthquake/graphql": ["packages/graphql/src/index.ts"],
-      "@earthquake/types": ["packages/types/src/index.ts"],
-      "@earthquake/ui": ["packages/ui/src/index.ts"]
+      "@earhquake/db": ["packages/db/src/index.ts"],
+      "@earhquake/graphql": ["packages/graphql/src/index.ts"],
+      "@earhquake/types": ["packages/types/src/index.ts"],
+      "@earhquake/ui": ["packages/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

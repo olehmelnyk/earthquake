@@ -9,5 +9,16 @@
     "@prisma/client": "^6.5.0",
     "csv-parser": "^3.2.0",
     "zod": "^3.24.2"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "seed": "npx prisma generate && ts-node seed-data.ts"
+  },
+  "devDependencies": {
+    "prisma": "^6.5.0",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.1"
   }
 }

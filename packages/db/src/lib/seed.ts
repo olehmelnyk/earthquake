@@ -10,29 +10,41 @@ interface RawCsvRecord {
 
 // Create a Zod schema for validating earthquake data
 const EarthquakeSchema = z.object({
-  location: z.string()
-    .min(1, "Location cannot be empty")
-    .refine(
-      (val) => {
-        // Check if location is in format "latitude, longitude" with optional space after comma
-        const regex = /^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/;
-        if (!regex.test(val)) return false;
+  location: z.string().transform((val) => {
+    // Convert 3rd party location format to our required format
+    // Expecting something like "34.0522,-118.2437" (no space after comma)
+    if (val.includes(', ')) {
+      // Format already has space after comma
+      return val;
+    } else if (val.includes(',')) {
+      // Format has no space after comma, so add one
+      const [lat, long] = val.split(',');
+      return `${lat}, ${long}`;
+    }
+    return val;
+  }).refine(
+    (val) => {
+      // Check if location is in format "latitude, longitude" with optional space after comma
+      const regex = /^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/;
+      if (!regex.test(val)) return false;
 
-        // Extract and validate latitude and longitude values
-        const [latStr, longStr] = val.split(',').map(s => s.trim());
-        const lat = parseFloat(latStr);
-        const long = parseFloat(longStr);
+      // Extract and validate latitude and longitude values
+      const [latStr, longStr] = val.split(',').map(s => s.trim());
+      const lat = parseFloat(latStr);
+      const long = parseFloat(longStr);
 
-        // Latitude: -90 to 90, Longitude: -180 to 180
-        return !isNaN(lat) && !isNaN(long) &&
-               lat >= -90 && lat <= 90 && // -90° (South Pole), +90° (North Pole)
-               long >= -180 && long <= 180; // -180° (west of the Prime Meridian), +180° (east of the Prime Meridian)
-      },
-      {
-        message: "Location must be in format 'latitude, longitude' with values in valid ranges (lat: -90 to 90, long: -180 to 180)",
-      }
-    ),
-  magnitude: z.string().refine(
+      // Latitude: -90 to 90, Longitude: -180 to 180
+      return !isNaN(lat) && !isNaN(long) &&
+             lat >= -90 && lat <= 90 && // -90° (South Pole), +90° (North Pole)
+             long >= -180 && long <= 180; // -180° (west of the Prime Meridian), +180° (east of the Prime Meridian)
+    },
+    {
+      message: "Location must be in format 'latitude, longitude' with values in valid ranges (lat: -90 to 90, long: -180 to 180)",
+    }
+  ),
+  magnitude: z.string().or(z.number()).transform(val =>
+    typeof val === 'number' ? String(val) : val
+  ).refine(
     (val) => {
       const num = parseFloat(val);
       return !isNaN(num) && num >= 0.1 && num <= 10;
@@ -82,7 +94,13 @@ export async function importEarthquakesFromCSV(filePath: string): Promise<Valida
   await new Promise<void>((resolve, reject) => {
     fs.createReadStream(filePath)
       .pipe(csvParser())
-      .on('data', (data: RawCsvRecord) => allResults.push(data))
+      .on('data', (data: RawCsvRecord) => {
+        // Log first few records to debug
+        if (allResults.length < 3) {
+          console.log('Sample record:', data);
+        }
+        allResults.push(data);
+      })
       .on('end', () => resolve())
       .on('error', (error: Error) => reject(error));
   });

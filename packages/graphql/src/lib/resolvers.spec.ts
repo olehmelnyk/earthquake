@@ -75,7 +75,7 @@ describe('GraphQL Resolvers', () => {
 
       earthquakeMethods.create.mockResolvedValue(mockEarthquake);
 
-      const result = await resolvers.Mutation.createEarthquake(
+      const result = await resolvers.Mutation.addEarthquake(
         undefined,
         { location: 'Tokyo', magnitude: 5.5, date: mockDate },
         context

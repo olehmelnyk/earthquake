@@ -8,6 +8,7 @@ const GET_EARTHQUAKES = gql`
       id
       magnitude
       location
+      depth
       date
     }
   }
@@ -29,6 +30,7 @@ export default function Index() {
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Magnitude</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Depth</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
             </tr>
           </thead>
@@ -38,6 +40,7 @@ export default function Index() {
                 <tr key={earthquake.id}>
                   <td className="px-6 py-4 whitespace-nowrap">{earthquake.location}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{earthquake.magnitude}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{earthquake.depth} km</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {new Date(earthquake.date).toLocaleDateString()}
                   </td>
@@ -45,7 +48,7 @@ export default function Index() {
               ))
             ) : (
               <tr>
-                <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">
+                <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
                   No earthquake data available
                 </td>
               </tr>

@@ -12,7 +12,7 @@ A monorepo application for tracking earthquake data built with NX, Next.js, Expr
 
 ## Prerequisites
 
-- Node.js (v18+)
+- Node.js (v22+)
 - PNPM package manager
 - Docker and Docker Compose (for PostgreSQL)
 
@@ -46,12 +46,15 @@ pnpm db:migrate
 6. Seed the database with earthquake data:
 
 ```bash
-# Download the earthquake CSV file first
-curl -o earthquakes.csv https://data.humdata.org/dataset/catalog-of-earthquakes1970-2014/resource/10ac8776-5141-494b-b3cd-bf7764b2f964/download/earthquakes.csv
+# Download the earthquake CSV file
+./scripts/download-earthquake-data.sh
 
-# Then import it
-pnpm db:seed earthquakes.csv
+# Then seed the database
+cd packages/db
+pnpm run seed
 ```
+
+The seed script imports earthquake data from the CSV file located at `packages/db/data/earthquakes.csv`.
 
 7. Start the development servers:
 
@@ -93,11 +96,15 @@ The GraphQL API provides the following operations:
 - `earthquake(id: ID!)`: Get a specific earthquake by ID
 
 ### Mutations
-- `createEarthquake(location: String!, magnitude: Float!, date: String!)`: Create a new earthquake
+- `addEarthquake(location: String!, magnitude: Float!, date: String!)`: Add a new earthquake
 - `updateEarthquake(id: ID!, location: String, magnitude: Float, date: String)`: Update an existing earthquake
 - `deleteEarthquake(id: ID!)`: Delete an earthquake by ID
 
-## Database Schema
+## Database
+
+This project uses PostgreSQL as the database. The database is set up with Docker Compose.
+
+### Database Schema
 
 The Earthquake model follows the requirements with the following fields:
 - `id` (String): A unique identifier for each earthquake
@@ -106,6 +113,29 @@ The Earthquake model follows the requirements with the following fields:
 - `date` (DateTime): The date when the earthquake occurred
 - `createdAt` (DateTime): Timestamp for record creation
 - `updatedAt` (DateTime): Timestamp for last update
+
+### Setup
+
+Run the following command to start the database:
+
+```bash
+docker-compose up -d postgres
+```
+
+### Seeding Data
+
+To seed the database with earthquake data:
+
+```bash
+# Download the earthquake CSV file
+./scripts/download-earthquake-data.sh
+
+# Then seed the database
+cd packages/db
+pnpm run seed
+```
+
+The seed script imports earthquake data from the CSV file located at `packages/db/data/earthquakes.csv`.
 
 ## Development Workflow
 

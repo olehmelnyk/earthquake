@@ -7,7 +7,6 @@
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],
-  "files": ["src/index.ts", "src/lib/database.ts", "src/lib/seed.ts"],
   "exclude": [
     "vite.config.ts",
     "vite.config.mts",

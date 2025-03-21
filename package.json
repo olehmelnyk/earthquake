@@ -11,7 +11,7 @@
     "db:generate": "cd packages/db && npx prisma generate",
     "db:migrate": "cd packages/db && npx prisma migrate dev",
     "db:studio": "cd packages/db && npx prisma studio",
-    "db:seed": "tsx packages/db/src/lib/seed.ts"
+    "db:seed": "bash scripts/seed.sh"
   },
   "private": true,
   "packageManager": "pnpm@8.15.4",

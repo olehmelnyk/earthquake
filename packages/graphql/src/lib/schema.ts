@@ -23,7 +23,7 @@ export const typeDefs: DocumentNode = gql`
   }
 
   type Mutation {
-    createEarthquake(
+    addEarthquake(
       location: String!
       magnitude: Float!
       date: String!
@@ -46,7 +46,7 @@ interface EarthquakeUpdateInput {
   date?: string;
 }
 
-interface CreateEarthquakeArgs {
+interface AddEarthquakeArgs {
   location: string;
   magnitude: number;
   date: string;
@@ -72,7 +72,7 @@ export const resolvers = {
     },
   },
   Mutation: {
-    createEarthquake: async (_: unknown, { location, magnitude, date }: CreateEarthquakeArgs, { prisma }: Context) => {
+    addEarthquake: async (_: unknown, { location, magnitude, date }: AddEarthquakeArgs, { prisma }: Context) => {
       return prisma.earthquake.create({
         data: {
           location,
