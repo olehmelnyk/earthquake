@@ -89,16 +89,83 @@ This will start:
 
 ## GraphQL API
 
-The GraphQL API provides the following operations:
+The GraphQL API provides the following queries and mutations:
 
 ### Queries
-- `earthquakes`: Get a list of all earthquakes
+- `earthquakes(page: Int, limit: Int, filter: EarthquakeFilter, sort: EarthquakeSort)`: Get earthquakes with pagination, filtering, and sorting
+  - Default pagination: 10 items per page, maximum 100 items per page
+  - Filtering options: date range, magnitude range, and location search
+  - Sorting options: any field with ascending or descending direction
+  - Returns a `PaginatedEarthquakes` object with `data`, `count`, and `hasMore` fields
 - `earthquake(id: ID!)`: Get a specific earthquake by ID
 
 ### Mutations
 - `addEarthquake(location: String!, magnitude: Float!, date: String!)`: Add a new earthquake
 - `updateEarthquake(id: ID!, location: String, magnitude: Float, date: String)`: Update an existing earthquake
 - `deleteEarthquake(id: ID!)`: Delete an earthquake by ID
+
+### Example Queries
+
+#### Get paginated earthquakes
+```graphql
+query {
+  earthquakes(page: 1, limit: 10) {
+    data {
+      id
+      location
+      magnitude
+      date
+    }
+    count
+    hasMore
+  }
+}
+```
+
+#### Filter earthquakes
+```graphql
+query {
+  earthquakes(
+    filter: {
+      dateFrom: "2022-01-01",
+      dateTo: "2022-12-31",
+      magnitudeFrom: 5.0,
+      magnitudeTo: 7.0,
+      location: "California"
+    }
+  ) {
+    data {
+      id
+      location
+      magnitude
+      date
+    }
+    count
+    hasMore
+  }
+}
+```
+
+#### Sort earthquakes
+```graphql
+query {
+  earthquakes(
+    sort: {
+      field: "magnitude",
+      direction: desc
+    }
+  ) {
+    data {
+      id
+      location
+      magnitude
+      date
+    }
+    count
+    hasMore
+  }
+}
+```
 
 ## Database
 
