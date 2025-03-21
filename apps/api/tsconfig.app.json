@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "outDir": "../../dist/out-tsc",
+    "module": "commonjs",
+    "types": ["node"]
+  },
+  "files": [],
+  "include": ["src/**/*.ts", "../../packages/graphql/src/index.ts", "../../packages/db/src/index.ts"],
+  "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
+}
