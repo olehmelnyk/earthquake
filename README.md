@@ -87,6 +87,39 @@ This will start:
 - `/packages/ui` - Shared UI components library with Storybook
 - `/packages/types` - Shared TypeScript types and Zod validators
 
+## UI Components
+
+We use ShadCN UI components for the frontend, implemented using atomic design principles. Components are organized in the `packages/ui` library:
+
+### Component Categories
+- **Atoms**: Basic building blocks (Button, Input, Label, Select, Slider)
+- **Molecules**: More complex components (AlertDialog, Dialog, Form, Toast)
+- **Organisms**: Complex UI sections (DataTable, layouts)
+
+### Using UI Components
+
+```tsx
+// Import components from the UI package
+import { Button, Input, DataTable } from '@earthquake/ui';
+
+// Use them in your components
+function MyComponent() {
+  return (
+    <div>
+      <Input placeholder="Search..." />
+      <Button>Submit</Button>
+    </div>
+  );
+}
+```
+
+### UI Features
+- **Layout**: Sidebar with filters + main content with data table
+- **Data Display**: Sortable and paginated data table
+- **Actions**: Add, edit, and delete earthquakes with form dialogs
+- **Notifications**: Toast messages for feedback
+- **Filtering**: Filter by location, magnitude range, and date range
+
 ## GraphQL API
 
 The GraphQL API provides the following queries and mutations:

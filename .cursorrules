@@ -1,0 +1,85 @@
+# Cursor Rules for Earthquake Project
+
+## Project Structure
+- NX monorepo
+- NextJS for frontend
+- Express for backend
+- Prisma as ORM
+- PostgreSQL as DB
+- Docker to run database
+- ShadcnUI for ui components + storybook
+- Tailwind - not plain CSS
+- GraphQL - Apollo - on both frontend and backend
+- Zod for validation
+- PNPM package manager
+- Vitest for unit tests
+- React-testing-library for component tests
+- Playwright for e2e tests
+- MSW for API mocking
+
+## Architecture Rules
+- Most logic should be implemented in packages and then imported into apps
+- Use atomic design principles for UI components:
+  - Atoms: smallest components (button, input, etc.)
+  - Molecules: combinations of atoms (forms, dialogs, etc.)
+  - Organisms: complex UI components (data tables, layouts, etc.)
+  - Templates: page layouts (in apps/web)
+  - Pages: actual pages (in apps/web)
+
+## UI Components
+We're using shadcn/ui components, which are already set up in the packages/ui library.
+
+### Available Components
+- **Atoms**: Button, Input, Label, Select, Slider
+- **Molecules**: AlertDialog, Dialog, Form, Toast
+- **Organisms**: DataTable
+
+### How to Use ShadcnUI Components
+1. Import components from the UI package:
+```tsx
+import { Button, Input } from '@earthquake/ui';
+```
+
+2. Use the components in your React components:
+```tsx
+<Button variant="default">Click me</Button>
+```
+
+### Adding New ShadcnUI Components
+If you need additional shadcn components that aren't already included:
+
+1. Install required Radix UI dependencies (if any):
+```bash
+cd packages/ui
+pnpm add @radix-ui/react-[component-name]
+```
+
+2. Create the component in the appropriate directory:
+   - Atoms: packages/ui/src/lib/atoms/
+   - Molecules: packages/ui/src/lib/molecules/
+   - Organisms: packages/ui/src/lib/organisms/
+
+3. Don't forget to export it in packages/ui/src/index.ts
+
+## Data Table Requirements
+For the earthquake data table:
+- Include data columns: id, location, magnitude, date
+- Last column should be "Actions" with edit/delete buttons
+- Edit button should open a form dialog
+- Delete button should open a confirmation dialog
+- Table should include pagination and sorting
+
+## UI Layout Requirements
+- Sidebar with filters on the left
+  - Location: text input
+  - Magnitude: range slider (from..to)
+  - Date range: date time inputs (from..to)
+- Data table on the right
+- Button to add new records
+- Toast notifications for success/error feedback
+
+## Form Validation
+Use zod for form validation:
+- Location: Required string
+- Magnitude: Required number (should be valid)
+- Date: Required valid date
