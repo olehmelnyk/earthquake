@@ -1,15 +1,15 @@
 {
-  "name": "@earhquake/graphql",
+  "name": "@earthquake/graphql",
   "version": "0.0.1",
   "private": true,
   "type": "commonjs",
   "main": "./index.cjs",
   "types": "./index.d.ts",
   "scripts": {
-    "test": "../../node_modules/.bin/vitest run"
+    "test": "npx vitest"
   },
   "dependencies": {
-    "@prisma/client": "^5.10.0",
+    "@prisma/client": "^6.5.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6"
   },

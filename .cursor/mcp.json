@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "console-ninja": {
+      "command": "node",
+      "args": [
+        "~/.console-ninja/mcp/"
+      ]
+    },
+    "nx-mcp": {
+      "url": "http://localhost:9484/sse"
+    }
+  }
+}

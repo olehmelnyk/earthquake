@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "nrwl.angular-console",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-playwright.playwright",
+    "firsttris.vscode-jest-runner",
+    "bradlc.vscode-tailwindcss",
+    "usernamehw.errorlens",
+    "graphql.vscode-graphql",
+    "graphql.vscode-graphql-syntax",
+    "yoavbls.pretty-ts-errors",
+    "prisma.prisma",
+    "sonarsource.sonarlint-vscode"
+  ]
+}
