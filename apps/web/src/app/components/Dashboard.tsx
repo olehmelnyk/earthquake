@@ -163,43 +163,48 @@ export const Dashboard: FC = () => {
           </div>
         </div>
       </header>
-      <div className="flex min-h-[calc(100vh-57px)]">
-        <SidebarFilters
-          initialFilters={filters}
-          onFilterChange={handleFilterChange}
-        />
-        <div className="flex-1">
-          <div className="w-full p-4 border-b border-border">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Earthquake Data</h2>
-              <Button
-                onClick={handleAddClick}
-                variant="outline"
-              >
-                Add New Record
-              </Button>
-            </div>
-          </div>
-          <div className="p-4">
-            <EarthquakeTable
-              earthquakes={earthquakeData?.data || []}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onSortChange={handleSortChange}
-              currentSort={sort}
-              currentPage={page}
-              totalPages={totalPages}
-              totalCount={totalCount}
-              onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
-              pageSize={limit}
+
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row min-h-[calc(100vh-57px)] gap-6">
+          <div className="w-full md:w-72 shrink-0">
+            <SidebarFilters
+              initialFilters={filters}
+              onFilterChange={handleFilterChange}
             />
           </div>
-          {loading && (
-            <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-50">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <div className="flex-1">
+            <div className="w-full py-4 border-b border-border">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold">Earthquake Data</h2>
+                <Button
+                  onClick={handleAddClick}
+                  variant="outline"
+                >
+                  Add New Record
+                </Button>
+              </div>
             </div>
-          )}
+            <div className="py-4">
+              <EarthquakeTable
+                earthquakes={earthquakeData?.data || []}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onSortChange={handleSortChange}
+                currentSort={sort}
+                currentPage={page}
+                totalPages={totalPages}
+                totalCount={totalCount}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+                pageSize={limit}
+              />
+            </div>
+            {loading && (
+              <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-50">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

@@ -40,17 +40,17 @@ export const SidebarFilters: FC<SidebarFiltersProps> = ({
 
   const form = useForm<EarthquakeFilterValues>({
     resolver: zodResolver(earthquakeFilterSchema),
-    defaultValues: initialFilters || defaultValues,
+    defaultValues: initialFilters ?? defaultValues,
   });
 
-  // Update form values when initialFilters change (from URL)
+  // Update form values when initialFilters change
   useEffect(() => {
     if (initialFilters) {
       Object.entries(initialFilters).forEach(([key, value]) => {
         form.setValue(key as keyof EarthquakeFilterValues, value);
       });
     }
-  }, [form, initialFilters]);
+  }, [initialFilters, form]);
 
   function onSubmit(data: EarthquakeFilterValues) {
     onFilterChange(data);
@@ -62,12 +62,12 @@ export const SidebarFilters: FC<SidebarFiltersProps> = ({
   };
 
   return (
-    <div className="w-72 p-4 bg-card/50 border-r border-border h-screen shrink-0 overflow-y-auto">
-      <Card className="shadow-none border-none bg-transparent">
-        <CardHeader className="px-0 pt-0">
+    <div className="w-full py-4">
+      <Card>
+        <CardHeader className="pb-3">
           <CardTitle className="text-lg font-semibold">Filters</CardTitle>
         </CardHeader>
-        <CardContent className="px-0 pb-0">
+        <CardContent>
           <Form methods={form} onSubmit={onSubmit} className="space-y-5">
             <FormField
               control={form.control}
