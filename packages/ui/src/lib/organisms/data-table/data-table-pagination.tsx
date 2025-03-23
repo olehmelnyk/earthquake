@@ -1,8 +1,8 @@
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
+  ChevronFirst,
+  ChevronLast,
 } from "lucide-react";
 import { Table } from "@tanstack/react-table";
 
@@ -19,6 +19,7 @@ interface DataTablePaginationProps<TData> {
   readonly table: Table<TData>;
   readonly currentPage?: number;
   readonly totalPages?: number;
+  readonly pageSize?: number;
   readonly onPageChange?: (page: number) => void;
   readonly onPageSizeChange?: (pageSize: number) => void;
   readonly hideRowsPerPage?: boolean;
@@ -29,6 +30,7 @@ export function DataTablePagination<TData>({
   table,
   currentPage,
   totalPages,
+  pageSize,
   onPageChange,
   onPageSizeChange,
   hideRowsPerPage = false,
@@ -37,6 +39,7 @@ export function DataTablePagination<TData>({
   // Use external pagination values if provided, otherwise use table's internal state
   const page = currentPage ?? table.getState().pagination.pageIndex + 1;
   const pageCount = totalPages ?? table.getPageCount();
+  const currentPageSize = pageSize ?? table.getState().pagination.pageSize;
 
   // Handle page changes (either internal or external)
   const handlePageChange = (newPage: number) => {
@@ -63,16 +66,16 @@ export function DataTablePagination<TData>({
         <div className="flex items-center gap-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={`${currentPageSize}`}
             onValueChange={handlePageSizeChange}
           >
             <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+              <SelectValue placeholder={currentPageSize} />
             </SelectTrigger>
             <SelectContent side="top" className="min-w-[70px]">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
+              {[10, 20, 30, 40, 50].map((pageSizeOption) => (
+                <SelectItem key={pageSizeOption} value={`${pageSizeOption}`}>
+                  {pageSizeOption}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -94,7 +97,7 @@ export function DataTablePagination<TData>({
               disabled={page === 1}
             >
               <span className="sr-only">Go to first page</span>
-              <ArrowLeftIcon className="h-4 w-4" />
+              <ChevronFirst className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -124,7 +127,7 @@ export function DataTablePagination<TData>({
               disabled={page >= pageCount}
             >
               <span className="sr-only">Go to last page</span>
-              <ArrowRightIcon className="h-4 w-4" />
+              <ChevronLast className="h-4 w-4" />
             </Button>
           </div>
         </div>

@@ -16,11 +16,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-  Badge
+  AlertDialogTrigger
 } from '@earthquake/ui';
 import { SortConfig } from '../hooks/useQueryParams';
-import { EarthquakeSeverityBadge } from '../earthquakes/components/earthquake-severity-badge';
 
 export interface Earthquake {
   id: string;
@@ -94,11 +92,20 @@ const formatDateTime = (dateString: string): string => {
 };
 
 // Get magnitude color based on value
-const getMagnitudeColor = (magnitude: number): 'destructive' | 'warning' | 'secondary' | 'default' => {
-  if (magnitude >= 7) return 'destructive';
-  if (magnitude >= 5) return 'warning';
-  if (magnitude >= 3) return 'secondary';
-  return 'default';
+const getMagnitudeColor = (magnitude: number): string => {
+  if (magnitude >= 7) {
+    return 'bg-red-600 dark:bg-red-700 text-white dark:text-white hover:bg-red-700 dark:hover:bg-red-800';
+  }
+
+  if (magnitude >= 5) {
+    return 'bg-amber-500 dark:bg-amber-600 text-black dark:text-white hover:bg-amber-600 dark:hover:bg-amber-700';
+  }
+
+  if (magnitude >= 3) {
+    return 'bg-green-500 dark:bg-green-600 text-white dark:text-white hover:bg-green-600 dark:hover:bg-green-700';
+  }
+
+  return 'bg-slate-400 dark:bg-slate-600 text-black dark:text-white hover:bg-slate-500 dark:hover:bg-slate-700';
 };
 
 // Action cell component extracted outside the main component
@@ -169,9 +176,9 @@ interface MagnitudeCellProps {
 }
 
 const MagnitudeCell: FC<MagnitudeCellProps> = ({ magnitude }) => (
-  <Badge variant={getMagnitudeColor(magnitude)} size="default" className="w-16 text-center">
+  <div className={`inline-flex items-center justify-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 w-16 text-center ${getMagnitudeColor(magnitude)}`}>
     {magnitude.toFixed(1)}
-  </Badge>
+  </div>
 );
 
 // Date cell component extracted outside the main component
@@ -189,7 +196,7 @@ const DateCell: FC<DateCellProps> = ({ date }) => (
 const createEarthquakeColumns = (
   onEdit: (id: string) => void,
   onDelete: (id: string) => void
-): ColumnDef<Earthquake, any>[] => [
+): ColumnDef<Earthquake, unknown>[] => [
   {
     accessorKey: 'location',
     header: 'Location',
@@ -236,7 +243,7 @@ export const EarthquakeTable: FC<EarthquakeTableProps> = ({
   pageSize = 10
 }) => {
   // Handle sorting changes from the table
-  const handleSortingChange = useCallback((field: string) => {
+  useCallback((field: string) => {
     if (!onSortChange) return;
 
     // If already sorting by this field, toggle direction

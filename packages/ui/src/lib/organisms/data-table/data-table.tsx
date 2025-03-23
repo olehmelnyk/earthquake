@@ -168,6 +168,7 @@ export function DataTable<TData, TValue>({
     totalPages,
     onPageChange,
     onPageSizeChange,
+    pageSize: pageSize || table.getState().pagination.pageSize,
   };
 
   return (

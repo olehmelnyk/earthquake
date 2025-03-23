@@ -150,7 +150,6 @@ export const Dashboard: FC = () => {
     }
   }, [error]);
 
-  const earthquakes = earthquakeData?.data || [];
   const totalCount = earthquakeData?.count || 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
@@ -175,6 +174,7 @@ export const Dashboard: FC = () => {
               <h2 className="text-2xl font-bold">Earthquake Data</h2>
               <Button
                 onClick={handleAddClick}
+                variant="outline"
               >
                 Add New Record
               </Button>
@@ -182,7 +182,7 @@ export const Dashboard: FC = () => {
           </div>
           <div className="p-4">
             <EarthquakeTable
-              earthquakes={earthquakes}
+              earthquakes={earthquakeData?.data || []}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onSortChange={handleSortChange}
