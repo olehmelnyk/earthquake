@@ -29,6 +29,7 @@ export * from './lib/utils';
 
 // Hooks
 export * from './lib/hooks/use-toast';
+export * from './lib/hooks/use-theme';
 
 // Schemas - Export everything from the earthquake schema
 export * from './lib/schemas/earthquake';
