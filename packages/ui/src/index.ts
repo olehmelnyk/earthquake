@@ -7,6 +7,7 @@ export * from './lib/atoms/slider';
 export * from './lib/atoms/card';
 export * from './lib/atoms/badge';
 export * from './lib/atoms/separator';
+export * from './lib/atoms/calendar';
 
 // Molecules
 export * from './lib/molecules/alert-dialog';
@@ -18,6 +19,9 @@ export * from './lib/molecules/theme-provider';
 export * from './lib/molecules/dropdown-menu';
 export * from './lib/molecules/alert';
 export * from './lib/molecules/validation-warning';
+export * from './lib/molecules/popover';
+export * from './lib/molecules/date-picker';
+export * from './lib/molecules/date-time-picker';
 
 // Organisms
 export * from './lib/organisms/data-table/data-table';

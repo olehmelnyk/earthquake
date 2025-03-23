@@ -18,7 +18,8 @@ import {
   CardContent,
   Separator,
   earthquakeFormSchema,
-  type EarthquakeFormValues
+  type EarthquakeFormValues,
+  DateTimePicker
 } from '@earthquake/ui';
 import { type Earthquake } from './EarthquakeTable';
 
@@ -69,66 +70,71 @@ export const EarthquakeForm: FC<EarthquakeFormProps> = ({
   return (
     <Card className="border-0 shadow-none">
       <CardContent className="p-0">
-        <Form methods={form} onSubmit={handleSubmit} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location (lat, long)</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="e.g. 34.0522, -118.2437"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <Form methods={form} onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm">Location (lat, long)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="e.g. 34.0522, -118.2437"
+                      className="bg-background"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="magnitude"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Magnitude</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    max="10"
-                    placeholder="e.g. 5.5"
-                    {...field}
-                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="magnitude"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm">Magnitude</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="10"
+                      placeholder="e.g. 5.5"
+                      className="bg-background"
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date and Time</FormLabel>
-                <FormControl>
-                  <Input
-                    type="datetime-local"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm">Date and Time</FormLabel>
+                  <FormControl>
+                    <DateTimePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      className="bg-background"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-          <Separator className="my-4" />
+          <Separator className="my-6" />
 
-          <div className="flex justify-end space-x-2 pt-2">
+          <div className="flex justify-end space-x-3 pt-2">
             <Button
               type="button"
               variant="outline"
