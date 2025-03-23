@@ -32,3 +32,6 @@ lets connect UI with API and make sure everything work.
 lets focus on specified functionality first before we start implementing extra.
 
 please update .cursorruels and docs regaring this rules and specs
+-------
+ WARN  deprecated @storybook/addon-styling@1.3.7: This package has been split into @storybook/addon-styling-webpack and @storybook/addon-themes. More info: https://github.com/storybookjs/addon-styling
+ WARN  deprecated apollo-server-express@3.13.0: The `apollo-server-express` package is part of Apollo Server v2 and v3, which are now end-of-life (as of October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/server` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.

@@ -6,7 +6,7 @@
     "declaration": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/lib/database.ts", "src/lib/seed.ts"],
   "exclude": [
     "vite.config.ts",
     "vite.config.mts",

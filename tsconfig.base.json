@@ -18,7 +18,8 @@
       "@earthquake/db": ["packages/db/src/index.ts"],
       "@earthquake/graphql": ["packages/graphql/src/index.ts"],
       "@earthquake/types": ["packages/types/src/index.ts"],
-      "@earthquake/ui": ["packages/ui/src/index.ts"]
+      "@earthquake/ui": ["packages/ui/src/index.ts"],
+      "@earthquake/ui/*": ["packages/ui/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

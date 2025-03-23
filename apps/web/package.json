@@ -1,0 +1,8 @@
+{
+  "name": "@earthquake/web",
+  "dependencies": {
+    "@earthquake/ui": "*",
+    "@earthquake/graphql": "*",
+    "@earthquake/types": "*"
+  }
+}

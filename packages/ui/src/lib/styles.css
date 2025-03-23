@@ -1,6 +1,15 @@
+/* Import global CSS */
+@import './globals.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --border: 214.3 31.8% 91.4%;
+  }
+}
 
 @layer base {
   :root {
@@ -68,7 +77,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-[hsl(var(--border))];
   }
   body {
     @apply bg-background text-foreground;

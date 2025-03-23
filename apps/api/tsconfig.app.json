@@ -10,6 +10,13 @@
     "types": ["node"]
   },
   "files": [],
-  "include": ["src/**/*.ts", "../../packages/graphql/src/index.ts", "../../packages/db/src/index.ts"],
+  "include": [
+    "src/**/*.ts",
+    "../../packages/graphql/src/index.ts",
+    "../../packages/graphql/src/lib/schema.ts",
+    "../../packages/db/src/index.ts",
+    "../../packages/db/src/lib/database.ts",
+    "../../packages/db/src/lib/seed.ts"
+  ],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

@@ -1,19 +1,45 @@
+"use client";
+
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
-import {
-  Controller,
+import type {
   ControllerProps,
   FieldPath,
   FieldValues,
-  FormProvider,
-  useFormContext,
 } from "react-hook-form";
+import { useController, useFormContext } from "react-hook-form";
 
 import { cn } from "../utils";
 import { Label } from "../atoms/label";
 
-const Form = FormProvider;
+// Form component that wraps react-hook-form with proper types
+import { FormProvider, UseFormReturn } from "react-hook-form";
+
+interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
+  methods: UseFormReturn<any>;
+  onSubmit?: (data: any) => void;
+}
+
+const Form = ({ methods, children, onSubmit, className, ...props }: FormProps) => {
+  const handleSubmit = onSubmit
+    ? methods.handleSubmit(onSubmit)
+    : (e: React.FormEvent) => e.preventDefault();
+
+  return (
+    <FormProvider {...methods}>
+      <form
+        onSubmit={handleSubmit}
+        className={className}
+        {...props}
+      >
+        <fieldset disabled={methods.formState.isSubmitting}>
+          {children}
+        </fieldset>
+      </form>
+    </FormProvider>
+  );
+};
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -32,9 +58,21 @@ const FormField = <
 >({
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
+  const contextValue = React.useMemo(
+    () => ({ name: props.name }),
+    [props.name]
+  );
+
+  const controller = useController(props);
+
   return (
-    <FormFieldContext.Provider value={{ name: props.name }}>
-      <Controller {...props} />
+    <FormFieldContext.Provider value={contextValue}>
+      {/* Use useController instead of Controller component */}
+      {props.render({
+        field: controller.field,
+        fieldState: controller.fieldState,
+        formState: controller.formState
+      })}
     </FormFieldContext.Provider>
   );
 };
@@ -44,11 +82,22 @@ const useFormField = () => {
   const itemContext = React.useContext(FormItemContext);
   const { getFieldState, formState } = useFormContext();
 
-  const fieldState = getFieldState(fieldContext.name, formState);
-
-  if (!fieldContext) {
-    throw new Error("useFormField should be used within <FormField>");
+  if (!fieldContext?.name || !formState) {
+    return {
+      id: '',
+      name: '',
+      formItemId: '',
+      formDescriptionId: '',
+      formMessageId: '',
+      invalid: false,
+      isDirty: false,
+      isTouched: false,
+      error: null
+    };
   }
+
+  // Safely get field state using react-hook-form's built-in method
+  const fieldState = getFieldState(fieldContext.name, formState);
 
   const { id } = itemContext;
 
@@ -75,9 +124,10 @@ const FormItem = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
   const id = React.useId();
+  const contextValue = React.useMemo(() => ({ id }), [id]);
 
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <FormItemContext.Provider value={contextValue}>
       <div ref={ref} className={cn("space-y-2", className)} {...props} />
     </FormItemContext.Provider>
   );
@@ -85,7 +135,7 @@ const FormItem = React.forwardRef<
 FormItem.displayName = "FormItem";
 
 const FormLabel = React.forwardRef<
-  React.ElementRef<typeof LabelPrimitive.Root>,
+  HTMLLabelElement,
   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
 >(({ className, ...props }, ref) => {
   const { error, formItemId } = useFormField();
@@ -102,7 +152,7 @@ const FormLabel = React.forwardRef<
 FormLabel.displayName = "FormLabel";
 
 const FormControl = React.forwardRef<
-  React.ElementRef<typeof Slot>,
+  HTMLElement,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ ...props }, ref) => {
   const { error, formItemId, formDescriptionId, formMessageId } =

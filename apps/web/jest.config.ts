@@ -1,4 +1,4 @@
-export default {
+const jestConfig = {
   displayName: 'web',
   preset: '../../jest.preset.js',
   transform: {
@@ -7,4 +7,7 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/apps/web',
+  setupFilesAfterEnv: ['./jest.setup.js'],
 };
+
+export default jestConfig;

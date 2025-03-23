@@ -11,7 +11,7 @@
       "options": {
         "outputPath": "dist/packages/graphql",
         "main": "packages/graphql/src/index.ts",
-        "tsConfig": "packages/graphql/tsconfig.lib.json",
+        "tsConfig": "packages/graphql/tsconfig.build.json",
         "assets": ["packages/graphql/*.md"],
         "format": ["cjs"],
         "generatePackageJson": true

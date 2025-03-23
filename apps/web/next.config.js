@@ -1,7 +1,5 @@
-//@ts-check
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { composePlugins, withNx } = require('@nx/next');
+const { withNx } = require('@nx/next/plugins/with-nx');
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
@@ -12,11 +10,20 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  // Enable full source maps in production
+  productionBrowserSourceMaps: true,
+  // Specify the source directory explicitly
+  distDir: '.next',
+  // Output standalone build for easier deployment
+  output: 'standalone',
+  // Use React strict mode
+  reactStrictMode: true,
+  // Handle CSS imports from the UI package
+  transpilePackages: ['@earthquake/ui'],
+  // Add experimental features to resolve packages from source
+  experimental: {
+    externalDir: true
+  }
 };
 
-const plugins = [
-  // Add more Next.js plugins to this list if needed.
-  withNx,
-];
-
-module.exports = composePlugins(...plugins)(nextConfig);
+module.exports = withNx(nextConfig);

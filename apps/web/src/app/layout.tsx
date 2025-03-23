@@ -1,22 +1,32 @@
+import type { Metadata } from 'next';
 import { ApolloWrapper } from './apollo-provider';
+import { Toaster, ThemeProvider } from '@earthquake/ui';
+
 import './global.css';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Earthquake Tracker',
-  description: 'A simple earthquake data tracking application',
+  description: 'Track and monitor earthquake data',
 };
-
-interface RootLayoutProps {
-  readonly children: React.ReactNode;
-}
 
 export default function RootLayout({
   children,
-}: RootLayoutProps): React.ReactElement {
+}: {
+  readonly children: React.ReactNode;
+}) {
   return (
-    <html lang="en">
-      <body>
-        <ApolloWrapper>{children}</ApolloWrapper>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body className="min-h-screen bg-background font-sans antialiased">
+        <ThemeProvider attribute="class" defaultTheme="light">
+          <ApolloWrapper>
+            {children}
+            <Toaster />
+          </ApolloWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );

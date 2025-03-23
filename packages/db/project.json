@@ -11,7 +11,7 @@
       "options": {
         "outputPath": "dist/packages/db",
         "main": "packages/db/src/index.ts",
-        "tsConfig": "packages/db/tsconfig.lib.json",
+        "tsConfig": "packages/db/tsconfig.build.json",
         "assets": ["packages/db/*.md"],
         "format": ["cjs"],
         "generatePackageJson": true

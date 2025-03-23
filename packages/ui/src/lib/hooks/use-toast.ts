@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 
 import type {
@@ -55,7 +57,23 @@ interface State {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
-const reducer = (state: State, action: Action): State => {
+const addToRemoveQueue = (toastId: string) => {
+  if (toastTimeouts.has(toastId)) {
+    return;
+  }
+
+  const timeout = setTimeout(() => {
+    toastTimeouts.delete(toastId);
+    dispatch({
+      type: "REMOVE_TOAST",
+      toastId: toastId,
+    });
+  }, TOAST_REMOVE_DELAY);
+
+  toastTimeouts.set(toastId, timeout);
+};
+
+export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TOAST":
       return {
@@ -74,19 +92,12 @@ const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action;
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
-        toastTimeouts.set(
-          toastId,
-          setTimeout(() => {
-            toastTimeouts.delete(toastId);
-            dispatch({
-              type: "REMOVE_TOAST",
-              toastId,
-            });
-          }, TOAST_REMOVE_DELAY)
-        );
+        addToRemoveQueue(toastId);
+      } else {
+        state.toasts.forEach((toast) => {
+          addToRemoveQueue(toast.id);
+        });
       }
 
       return {
@@ -151,7 +162,7 @@ function toast({ ...props }: Toast) {
   });
 
   return {
-    id,
+    id: id,
     dismiss,
     update,
   };
