@@ -5,8 +5,13 @@ import { SidebarFilters } from './SidebarFilters';
 import { EarthquakeTable, type Earthquake } from './EarthquakeTable';
 import { EarthquakeForm } from './EarthquakeForm';
 import { ModeToggle } from './ModeToggle';
-import { Button } from '@earthquake/ui';
-import { type EarthquakeFilterValues, type EarthquakeFormValues } from '@earthquake/ui';
+import {
+  Button,
+  earthquakeFormSchema,
+  earthquakeFilterSchema,
+  type EarthquakeFormValues,
+  type EarthquakeFilterValues
+} from '@earthquake/ui';
 import { useEarthquakeData, EarthquakeFilterVariables } from '../hooks/useEarthquakeData';
 import { useQueryParams, SortConfig } from '../hooks/useQueryParams';
 

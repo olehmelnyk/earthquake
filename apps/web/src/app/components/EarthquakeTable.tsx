@@ -55,7 +55,11 @@ const formatDateTime = (dateString: string): string => {
     }
 
     // Parse with dayjs for better cross-browser support
-    const date = dayjs(dateString);
+    // First convert to a number if it's a timestamp string to handle potential number formatting issues
+    const isTimestampString = /^\d+$/.test(dateString);
+    const date = isTimestampString
+      ? dayjs(parseInt(dateString, 10))
+      : dayjs(dateString);
 
     // Check if valid date
     if (!date.isValid()) {
@@ -63,14 +67,22 @@ const formatDateTime = (dateString: string): string => {
       return 'Invalid date';
     }
 
-    // Ensure we're working with 4-digit years (1970-2014) not 2-digit years
-    // This fixes issues where years like 1970 might be interpreted as 0070
+    // Check if year is unreasonably large (could be parsing milliseconds as years)
     const year = date.year();
-    if (year < 1000) {
-      console.warn('Year appears to be formatted incorrectly:', year);
-      // Try to fix by assuming it's a recent year
-      const correctedDate = dayjs(dateString).year(year + 2000);
-      return correctedDate.format('MMM D, YYYY h:mm A');
+    if (year > 2100 || year < 1900) {
+      console.warn('Year out of reasonable range:', year, 'from date string:', dateString);
+
+      // Try to parse it as a Unix timestamp in milliseconds
+      const millisecondDate = dayjs(parseInt(dateString, 10));
+      if (millisecondDate.isValid() && millisecondDate.year() >= 1900 && millisecondDate.year() <= 2100) {
+        return millisecondDate.format('MMM D, YYYY h:mm A');
+      }
+
+      // Try to parse it as a Unix timestamp in seconds
+      const secondsDate = dayjs(parseInt(dateString, 10) * 1000);
+      if (secondsDate.isValid() && secondsDate.year() >= 1900 && secondsDate.year() <= 2100) {
+        return secondsDate.format('MMM D, YYYY h:mm A');
+      }
     }
 
     // Format with dayjs

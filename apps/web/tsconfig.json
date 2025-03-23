@@ -17,18 +17,23 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
+    "../../dist/apps/web/.next/types/**/*.ts",
+    "next-env.d.ts",
     "src/**/*.js",
     "src/**/*.jsx",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "src/types.d.ts"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/types.d.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

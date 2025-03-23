@@ -4,6 +4,7 @@ import { useToast } from '@earthquake/ui';
 import { Earthquake } from '../components/EarthquakeTable';
 import dayjs from 'dayjs';
 import { SortConfig } from './useQueryParams';
+import { type EarthquakeFormValues } from '@earthquake/ui';
 
 export const GET_EARTHQUAKES = gql`
   query GetEarthquakes(
@@ -95,27 +96,52 @@ export interface EarthquakeFilterVariables {
   sort: SortConfig;
 }
 
-interface EarthquakeFormData {
-  location: string;
-  magnitude: number;
-  date: string;
-}
+// Using EarthquakeFormValues as the base type for form data
+type EarthquakeFormData = EarthquakeFormValues;
 
 // Helper for formatting date strings consistently for the API
 const formatDateForAPI = (dateString: string): string => {
   if (!dateString) return '';
 
-  // Use dayjs for better date handling
-  const date = dayjs(dateString);
+  try {
+    // Check if it's a numeric string (potential timestamp)
+    if (/^\d+$/.test(dateString)) {
+      // Try parsing as a timestamp in milliseconds
+      const millisDate = dayjs(parseInt(dateString, 10));
 
-  // Check if date is valid
-  if (!date.isValid()) {
-    console.warn('Invalid date for API:', dateString);
+      // Check if resulting date is reasonable (between 1900-2100)
+      if (millisDate.isValid() && millisDate.year() >= 1900 && millisDate.year() <= 2100) {
+        return millisDate.toISOString();
+      }
+
+      // Try parsing as a timestamp in seconds
+      const secondsDate = dayjs(parseInt(dateString, 10) * 1000);
+      if (secondsDate.isValid() && secondsDate.year() >= 1900 && secondsDate.year() <= 2100) {
+        return secondsDate.toISOString();
+      }
+    }
+
+    // Regular date string parsing with dayjs
+    const date = dayjs(dateString);
+
+    // Check if date is valid
+    if (!date.isValid()) {
+      console.warn('Invalid date for API:', dateString);
+      return '';
+    }
+
+    // Validate the year is reasonable
+    if (date.year() < 1900 || date.year() > 2100) {
+      console.warn('Year out of reasonable range:', date.year(), 'from', dateString);
+      return '';
+    }
+
+    // Return ISO format
+    return date.toISOString();
+  } catch (error) {
+    console.error('Error formatting date for API:', dateString, error);
     return '';
   }
-
-  // Return ISO format
-  return date.toISOString();
 };
 
 export function useEarthquakeData(filters: EarthquakeFilterVariables) {

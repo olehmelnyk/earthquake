@@ -2,14 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
-
-export interface EarthquakeFilterValues {
-  location?: string;
-  magnitudeFrom?: number;
-  magnitudeTo?: number;
-  dateFrom?: string;
-  dateTo?: string;
-}
+import { type EarthquakeFilterValues } from '@earthquake/ui';
 
 export interface SortConfig {
   field: string;

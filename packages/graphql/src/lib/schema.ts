@@ -7,6 +7,14 @@ interface Context {
   prisma: PrismaClient;
 }
 
+// Helper function to safely serialize dates to ISO strings
+const serializeDate = (date: Date): string => {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+    return '';
+  }
+  return date.toISOString();
+};
+
 export const typeDefs: DocumentNode = gql`
   type Earthquake {
     id: ID!
@@ -116,6 +124,12 @@ const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
 export const resolvers = {
+  // Custom resolvers to consistently format dates
+  Earthquake: {
+    date: (parent: any) => serializeDate(parent.date),
+    createdAt: (parent: any) => serializeDate(parent.createdAt),
+    updatedAt: (parent: any) => serializeDate(parent.updatedAt),
+  },
   Query: {
     earthquakes: async (_: unknown, args: EarthquakesQueryArgs, { prisma }: Context) => {
       // Pagination
