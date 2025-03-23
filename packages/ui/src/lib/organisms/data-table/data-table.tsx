@@ -44,6 +44,8 @@ interface DataTableProps<TData, TValue> {
   readonly showPagination?: boolean;
   readonly showTopPagination?: boolean;
   readonly showBottomPagination?: boolean;
+  // Custom class name
+  readonly className?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -64,6 +66,8 @@ export function DataTable<TData, TValue>({
   showPagination = true,
   showTopPagination = false,
   showBottomPagination = true,
+  // Custom class name
+  className,
 }: DataTableProps<TData, TValue>) {
   // Use initialSortingState for the initial state
   const [sorting, setSorting] = React.useState<SortingState>(initialSortingState || []);
@@ -172,9 +176,9 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="space-y-4 w-full">
+    <div className={cn("flex flex-col h-full", className)}>
       {showPagination && showTopPagination && (
-        <div className="bg-card rounded-md border border-border shadow-sm">
+        <div className="bg-card rounded-md border border-border shadow-sm mb-4">
           <DataTablePagination
             {...paginationProps}
             hideNavigation={true}
@@ -182,56 +186,74 @@ export function DataTable<TData, TValue>({
         </div>
       )}
 
-      <div className="rounded-md border border-border shadow-sm overflow-hidden">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
+      <div className="rounded-md border border-border flex-1 flex flex-col overflow-hidden">
+        {/* Fixed header */}
+        <div className="bg-background z-10">
+          <table className="w-full caption-bottom text-sm table-fixed">
+            <thead className="bg-muted/50 [&_tr]:border-b">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id} className="border-b border-border">
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="h-12 px-4 text-left align-middle font-medium text-muted-foreground"
+                      style={{ width: header.getSize() }}
+                    >
                       {renderHeaderContent(header)}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={() => onRowClick?.(row.original)}
-                  className={cn(onRowClick && "cursor-pointer")}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
+                    </th>
                   ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+                </tr>
+              ))}
+            </thead>
+          </table>
+        </div>
+
+        {/* Scrollable body */}
+        <div className="overflow-y-auto" style={{ height: 'calc(100% - 108px)' }}>
+          <table className="w-full caption-bottom text-sm table-fixed">
+            <tbody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className={cn(
+                      "border-b border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+                      onRowClick && "cursor-pointer"
+                    )}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() => onRowClick?.(row.original)}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="p-4 align-middle"
+                        style={{ width: cell.column.getSize() }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr className="border-b border-border">
+                  <td
+                    colSpan={columns.length}
+                    className="h-24 text-center p-4"
+                  >
+                    No results.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {showPagination && showBottomPagination && (
-        <div className="bg-card rounded-md border border-border shadow-sm">
+        <div className="bg-card rounded-md border border-border shadow-sm mt-4">
           <DataTablePagination {...paginationProps} />
         </div>
       )}

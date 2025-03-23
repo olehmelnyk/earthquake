@@ -103,3 +103,40 @@
 }
 
 /* Additional app-specific styles below */
+
+/* Scrollable table styles */
+.scrollable-table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Ensure tables have same column widths */
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Make sure overflow works in flex containers */
+.flex-1 {
+  flex: 1 1 0%;
+  min-height: 0;
+}
+
+/* Ensure overflow-y-auto works properly in flex context */
+.overflow-y-auto {
+  min-height: 0;
+}
+
+/* Fix for sticky positioning */
+.sticky {
+  position: sticky;
+}
+
+/* Proper viewport sizing */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent double scrollbars */
+}

@@ -154,7 +154,7 @@ export const Dashboard: FC = () => {
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
   return (
-    <main className="bg-background min-h-screen">
+    <main className="bg-background h-screen flex flex-col">
       <header className="border-b border-border">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <h1 className="text-xl font-bold flex items-center">Earthquake Tracker</h1>
@@ -164,17 +164,17 @@ export const Dashboard: FC = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row min-h-[calc(100vh-57px)] gap-6">
-          <div className="w-full md:w-72 shrink-0">
+      <div className="container mx-auto px-4 flex-1" style={{ height: 'calc(100vh - 57px)' }}>
+        <div className="flex flex-col md:flex-row h-full gap-6">
+          <div className="w-full md:w-72 shrink-0 py-4 overflow-y-auto">
             <SidebarFilters
               initialFilters={filters}
               onFilterChange={handleFilterChange}
             />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 flex flex-col overflow-hidden">
             <div className="w-full py-4 border-b border-border">
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Earthquake Data</h2>
                 <Button
                   onClick={handleAddClick}
@@ -184,7 +184,7 @@ export const Dashboard: FC = () => {
                 </Button>
               </div>
             </div>
-            <div className="py-4">
+            <div className="flex-1 overflow-hidden">
               <EarthquakeTable
                 earthquakes={earthquakeData?.data || []}
                 onEdit={handleEdit}

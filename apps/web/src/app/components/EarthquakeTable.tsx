@@ -202,18 +202,21 @@ const createEarthquakeColumns = (
     header: 'Location',
     cell: ({ row }) => <LocationCell location={row.original.location} />,
     enableSorting: true,
+    size: 250,
   },
   {
     accessorKey: 'magnitude',
     header: 'Magnitude',
     cell: ({ row }) => <MagnitudeCell magnitude={row.original.magnitude} />,
     enableSorting: true,
+    size: 100,
   },
   {
     accessorKey: 'date',
     header: 'Date',
     cell: ({ row }) => <DateCell date={row.original.date} />,
     enableSorting: true,
+    size: 200,
   },
   {
     id: 'actions',
@@ -226,6 +229,7 @@ const createEarthquakeColumns = (
       />
     ),
     enableSorting: false,
+    size: 100,
   },
 ];
 
@@ -268,7 +272,7 @@ export const EarthquakeTable: FC<EarthquakeTableProps> = ({
   );
 
   return (
-    <div className="w-full">
+    <div className="h-full flex flex-col">
       <DataTable
         columns={columns}
         data={earthquakes}
@@ -300,6 +304,7 @@ export const EarthquakeTable: FC<EarthquakeTableProps> = ({
         onPageChange={onPageChange}
         onPageSizeChange={onPageSizeChange}
         showTopPagination={false}
+        className="h-full"
       />
       {earthquakes.length === 0 && (
         <div className="text-center py-10 text-muted-foreground">
