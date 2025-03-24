@@ -2,6 +2,9 @@
 
 A monorepo application for tracking earthquake data built with NX, Next.js, Express, GraphQL, and Prisma.
 
+> For a comprehensive overview of the project architecture and implementation details,
+> please refer to the [Project Overview Document](docs/project-overview.md).
+
 ## Tech Stack
 
 - Frontend: Next.js with Apollo Client, TailwindCSS, and ShadCN/UI
@@ -25,25 +28,37 @@ A monorepo application for tracking earthquake data built with NX, Next.js, Expr
 pnpm install
 ```
 
-3. Start the PostgreSQL database:
+3. Set up environment variables:
+
+```bash
+# For the API
+cp apps/api/.env.example apps/api/.env
+
+# For the web app (if not already existing)
+cp apps/web/.env.local.example apps/web/.env.local # if .env.local.example exists
+```
+
+Make sure to update the environment variables with your specific configuration if needed.
+
+4. Start the PostgreSQL database:
 
 ```bash
 docker-compose up -d
 ```
 
-4. Generate Prisma client:
+5. Generate Prisma client:
 
 ```bash
 pnpm db:generate
 ```
 
-5. Run database migrations:
+6. Run database migrations:
 
 ```bash
 pnpm db:migrate
 ```
 
-6. Seed the database with earthquake data:
+7. Seed the database with earthquake data:
 
 ```bash
 # Download the earthquake CSV file
@@ -56,7 +71,7 @@ pnpm run seed
 
 The seed script imports earthquake data from the CSV file located at `packages/db/data/earthquakes.csv`.
 
-7. Start the development servers:
+8. Start the development servers:
 
 ```bash
 pnpm dev

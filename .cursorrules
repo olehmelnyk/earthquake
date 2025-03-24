@@ -1,5 +1,8 @@
 # Cursor Rules for Earthquake Project
 
+> **Note**: For a complete overview of the project implementation and structure,
+> please refer to the [Project Overview Document](docs/project-overview.md).
+
 ## Project Structure
 - NX monorepo
 - NextJS for frontend
@@ -25,6 +28,15 @@
   - Organisms: complex UI components (data tables, layouts, etc.)
   - Templates: page layouts (in apps/web)
   - Pages: actual pages (in apps/web)
+
+## Coding rules
+- For UI components
+  - Mark the props of the component as read-only.
+- For test
+  - for location - use `lat, long`, ex: `10, -10` instead of `Tokyo, Japan` or `San Francisco, CA`
+  - use `test-id` if neeed, avoide selectors by tag/class, or by text - since thay may change in future
+- For terminal
+  - never run `pnpm nx graph` - it's uselss and you just hangout
 
 ## UI Components
 We're using shadcn/ui components, which are already set up in the packages/ui library.
