@@ -5,5 +5,10 @@
   "type": "commonjs",
   "main": "./index.cjs",
   "types": "./index.d.ts",
+  "scripts": {
+    "build": "nx build types",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
   "dependencies": {}
 }

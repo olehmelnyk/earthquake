@@ -72,10 +72,18 @@
     }
   ],
   "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"]
+    },
     "e2e-ci--**/*": {
       "dependsOn": ["^build"]
     },
     "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
+    "@nx/vite:build": {
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
@@ -86,7 +94,7 @@
       "implicitDependencies": ["db", "graphql"]
     },
     "web": {
-      "implicitDependencies": ["graphql"]
+      "implicitDependencies": ["graphql", "ui"]
     }
   },
   "generators": {

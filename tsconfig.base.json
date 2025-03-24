@@ -4,12 +4,12 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
+    "target": "es2020",
+    "module": "es2020",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
@@ -19,6 +19,7 @@
       "@earthquake/graphql": ["packages/graphql/src/index.ts"],
       "@earthquake/types": ["packages/types/src/index.ts"],
       "@earthquake/ui": ["packages/ui/src/index.ts"],
+      "@earthquake/ui/schemas": ["packages/ui/src/schemas.ts"],
       "@earthquake/ui/*": ["packages/ui/src/*"]
     }
   },

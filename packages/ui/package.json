@@ -1,26 +1,39 @@
 {
   "name": "@earthquake/ui",
   "version": "0.0.1",
-  "main": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
+    "dist",
     "src",
     "tailwind.config.js"
   ],
   "exports": {
     ".": {
-      "import": "./src/index.ts",
-      "require": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas.d.ts",
+      "import": "./dist/schemas.js",
+      "require": "./dist/schemas.js"
     },
     "./tailwind.config.js": {
       "import": "./tailwind.config.js",
       "require": "./tailwind.config.js"
     },
     "./globals.css": "./src/lib/globals.css",
+    "./lib/schemas": {
+      "types": "./dist/lib/schemas/earthquake.d.ts",
+      "import": "./dist/lib/schemas/earthquake.js",
+      "require": "./dist/lib/schemas/earthquake.js"
+    },
     "./lib/*": "./src/lib/*"
   },
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "nx build ui",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

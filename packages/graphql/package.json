@@ -6,7 +6,9 @@
   "main": "./index.cjs",
   "types": "./index.d.ts",
   "scripts": {
-    "test": "npx vitest"
+    "build": "nx build graphql",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",

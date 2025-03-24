@@ -11,7 +11,7 @@
     "zod": "^3.24.2"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "nx build db",
     "test": "vitest run",
     "test:watch": "vitest",
     "seed": "npx prisma generate && ts-node seed-data.ts"

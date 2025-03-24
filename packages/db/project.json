@@ -8,6 +8,7 @@
     "build": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
+      "dependsOn": ["prisma:generate"],
       "options": {
         "outputPath": "dist/packages/db",
         "main": "packages/db/src/index.ts",
@@ -15,6 +16,13 @@
         "assets": ["packages/db/*.md"],
         "format": ["cjs"],
         "generatePackageJson": true
+      }
+    },
+    "prisma:generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx prisma generate",
+        "cwd": "packages/db"
       }
     }
   }

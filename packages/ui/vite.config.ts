@@ -32,12 +32,11 @@ export default defineConfig(() => ({
       transformMixedEsModules: true,
     },
     lib: {
-      // Could also be a dictionary or array of multiple entry points.
-      entry: 'src/index.ts',
-      name: 'ui',
-      fileName: 'index',
-      // Change this to the formats you want to support.
-      // Don't forget to update your package.json as well.
+      // Multiple entry points
+      entry: {
+        index: 'src/index.ts',
+        schemas: 'src/schemas.ts'
+      },
       formats: ['es' as const],
     },
     rollupOptions: {
