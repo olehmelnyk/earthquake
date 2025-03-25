@@ -22,6 +22,10 @@ A monorepo application for tracking earthquake data built with NX, Next.js, Expr
 ## Getting Started
 
 1. Clone the repository
+```bash
+git clone git@github.com:olehmelnyk/earthquake.git
+```
+
 2. Install dependencies:
 
 ```bash
