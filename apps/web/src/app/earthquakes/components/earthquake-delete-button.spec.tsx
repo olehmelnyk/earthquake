@@ -1,134 +1,116 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { EarthquakeDeleteButton } from './earthquake-delete-button';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { userEvent } from '@testing-library/user-event';
-import type { ReactNode } from 'react';
+import { vi } from 'vitest';
+import { MockedProvider } from '@apollo/client/testing';
+import { DELETE_EARTHQUAKE } from '../../hooks/useEarthquakeData';
 
-// Mock React hooks
-vi.mock('react', async () => {
-  const actual = await vi.importActual('react');
-
-  // Mock the useState hook
-  const useState = vi.fn().mockImplementation((initialValue) => {
-    return [initialValue, vi.fn()];
-  });
-
-  return {
-    ...actual,
-    useState
-  };
-});
-
-// Mock AlertDialog components
-vi.mock('@earthquake/ui', () => {
-  const mockToast = {
-    toast: vi.fn()
-  };
-
-  return {
-    Button: ({ children, onClick, ...props }: { children: ReactNode; onClick?: () => void; [key: string]: any }) => (
-      <button onClick={onClick} {...props} data-testid="mock-button">
-        {children}
-      </button>
-    ),
-    useToast: () => mockToast,
-    AlertDialog: ({ children }: { children: ReactNode }) => <div data-testid="alert-dialog">{children}</div>,
-    AlertDialogTrigger: ({ children, asChild }: { children: ReactNode; asChild?: boolean }) => (
-      <div data-testid="alert-dialog-trigger">{children}</div>
-    ),
-    AlertDialogContent: ({ children }: { children: ReactNode }) => (
-      <div data-testid="alert-dialog-content">{children}</div>
-    ),
-    AlertDialogHeader: ({ children }: { children: ReactNode }) => (
-      <div data-testid="alert-dialog-header">{children}</div>
-    ),
-    AlertDialogFooter: ({ children }: { children: ReactNode }) => (
-      <div data-testid="alert-dialog-footer">{children}</div>
-    ),
-    AlertDialogTitle: ({ children }: { children: ReactNode }) => (
-      <h2 data-testid="alert-dialog-title">{children}</h2>
-    ),
-    AlertDialogDescription: ({ children }: { children: ReactNode }) => (
-      <div data-testid="alert-dialog-description">{children}</div>
-    ),
-    AlertDialogAction: ({ children, onClick, ...props }: { children: ReactNode; onClick?: () => void; [key: string]: any }) => (
-      <button onClick={onClick} data-testid="alert-dialog-action" {...props}>
-        {children}
-      </button>
-    ),
-    AlertDialogCancel: ({ children }: { children: ReactNode }) => (
-      <button data-testid="alert-dialog-cancel">{children}</button>
-    ),
-  };
-});
+// Mock UI components
+vi.mock('@earthquake/ui', () => ({
+  AlertDialog: {
+    Root: ({ children }: { children: React.ReactNode }) => <div data-testid="alert-dialog-root">{children}</div>,
+    Trigger: ({ children }: { children: React.ReactNode }) => <div data-testid="alert-dialog-trigger">{children}</div>,
+    Content: ({ children }: { children: React.ReactNode }) => <div data-testid="alert-dialog-content">{children}</div>,
+    Header: ({ children }: { children: React.ReactNode }) => <div data-testid="alert-dialog-header">{children}</div>,
+    Title: ({ children }: { children: React.ReactNode }) => <div data-testid="alert-dialog-title">{children}</div>,
+    Description: ({ children }: { children: React.ReactNode }) => <div data-testid="alert-dialog-description">{children}</div>,
+    Footer: ({ children }: { children: React.ReactNode }) => <div data-testid="alert-dialog-footer">{children}</div>,
+    Action: (props: any) => <button data-testid="alert-dialog-action" onClick={props.onClick}>{props.children}</button>,
+    Cancel: ({ children }: { children: React.ReactNode }) => <button data-testid="alert-dialog-cancel">{children}</button>,
+  },
+  Button: (props: any) => <button {...props}>{props.children}</button>,
+  useToast: () => ({ toast: vi.fn() }),
+}));
 
 // Mock Lucide icons
 vi.mock('lucide-react', () => ({
-  Trash2: () => <span data-testid="trash-icon" />
+  Trash2: () => <div data-testid="trash-icon" />,
 }));
 
-// Create a wrapped version of the component for testing
-function MockedEarthquakeDeleteButton(props: {
-  id: string;
-  location: string;
-  onDelete: (id: string) => Promise<void>;
-}) {
-  return <EarthquakeDeleteButton {...props} />;
-}
-
 describe('EarthquakeDeleteButton', () => {
-  const mockProps = {
-    id: '1',
-    location: '35.6762, 139.6503',
-    onDelete: vi.fn().mockResolvedValue(undefined)
-  };
+  const mockOnDelete = vi.fn();
 
-  const user = userEvent.setup();
-
-  beforeEach(() => {
+  afterEach(() => {
     vi.clearAllMocks();
   });
 
+  const successMock = {
+    request: {
+      query: DELETE_EARTHQUAKE,
+      variables: { id: '1' }
+    },
+    result: {
+      data: {
+        deleteEarthquake: { id: '1' }
+      }
+    }
+  };
+
+  const errorMock = {
+    request: {
+      query: DELETE_EARTHQUAKE,
+      variables: { id: 'error-id' }
+    },
+    error: new Error('Failed to delete earthquake')
+  };
+
   it('should render delete button', () => {
-    render(<MockedEarthquakeDeleteButton {...mockProps} />);
-    expect(screen.getByTestId('mock-button')).toBeInTheDocument();
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <EarthquakeDeleteButton id="1" location="San Francisco" onDelete={mockOnDelete} />
+      </MockedProvider>
+    );
+
     expect(screen.getByTestId('trash-icon')).toBeInTheDocument();
+    expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'Delete earthquake');
   });
 
   it('should call onDelete when confirmation button is clicked', async () => {
-    render(<MockedEarthquakeDeleteButton {...mockProps} />);
+    render(
+      <MockedProvider mocks={[successMock]} addTypename={false}>
+        <EarthquakeDeleteButton id="1" location="San Francisco" onDelete={mockOnDelete} />
+      </MockedProvider>
+    );
 
-    // Click the action button directly since we're mocking the dialog
-    const deleteButton = screen.getByTestId('alert-dialog-action');
-    await user.click(deleteButton);
+    // Open the dialog
+    fireEvent.click(screen.getByRole('button'));
 
-    expect(mockProps.onDelete).toHaveBeenCalledWith('1');
+    // Click the confirm button in the dialog
+    fireEvent.click(screen.getByTestId('alert-dialog-action'));
+
+    await waitFor(() => {
+      expect(mockOnDelete).toHaveBeenCalledWith('1');
+    });
   });
 
   it('should handle error when deletion fails', async () => {
-    const errorMock = vi.fn().mockRejectedValue(new Error('Failed to delete'));
-
     render(
-      <MockedEarthquakeDeleteButton
-        id="1"
-        location="35.6762, 139.6503"
-        onDelete={errorMock}
-      />
+      <MockedProvider mocks={[errorMock]} addTypename={false}>
+        <EarthquakeDeleteButton id="error-id" location="Error Location" onDelete={mockOnDelete} />
+      </MockedProvider>
     );
 
-    // Click the action button directly
-    const deleteButton = screen.getByTestId('alert-dialog-action');
-    await user.click(deleteButton);
+    // Open the dialog
+    fireEvent.click(screen.getByRole('button'));
 
+    // Click the confirm button in the dialog
+    fireEvent.click(screen.getByTestId('alert-dialog-action'));
+
+    // The onDelete should not be called when there's an error
     await waitFor(() => {
-      expect(errorMock).toHaveBeenCalledWith('1');
+      expect(mockOnDelete).not.toHaveBeenCalled();
     });
   });
 
   it('should show location in dialog description', () => {
-    render(<MockedEarthquakeDeleteButton {...mockProps} />);
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <EarthquakeDeleteButton id="1" location="San Francisco" onDelete={mockOnDelete} />
+      </MockedProvider>
+    );
 
-    const description = screen.getByTestId('alert-dialog-description');
-    expect(description.textContent).toContain('35.6762, 139.6503');
+    // Open the dialog
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(screen.getByTestId('alert-dialog-description')).toHaveTextContent('Are you sure you want to delete the earthquake recorded at San Francisco?');
   });
 });

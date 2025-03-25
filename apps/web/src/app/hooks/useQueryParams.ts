@@ -37,8 +37,8 @@ export function useQueryParams() {
   const getFiltersFromQuery = useCallback((): EarthquakeFilterValues => {
     return {
       location: searchParams.get('location') ?? '',
-      magnitudeFrom: Number(searchParams.get('magnitudeFrom') ?? 0),
-      magnitudeTo: Number(searchParams.get('magnitudeTo') ?? 10),
+      magnitudeFrom: Number(searchParams.get('magnitudeFrom') ?? ''),
+      magnitudeTo: Number(searchParams.get('magnitudeTo') ?? ''),
       dateFrom: searchParams.get('dateFrom') ?? '',
       dateTo: searchParams.get('dateTo') ?? '',
     };

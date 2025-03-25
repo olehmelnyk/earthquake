@@ -2,11 +2,9 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "../utils";
 import { Button } from "../atoms/button";
-import { Calendar } from "../atoms/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Input } from "../atoms/input";
 
 export interface DatePickerProps {
@@ -27,7 +25,6 @@ export function DatePicker({
   const [date, setDate] = React.useState<Date | undefined>(
     value ? (typeof value === "string" ? new Date(value) : value) : undefined
   );
-  const [open, setOpen] = React.useState(false);
 
   // Format the date for display in the input field
   const formatForDisplay = (date: Date | undefined): string => {
@@ -63,16 +60,6 @@ export function DatePicker({
     }
   };
 
-  const handleCalendarSelect = (newDate: Date | undefined) => {
-    setDate(newDate);
-    if (newDate) {
-      onChange?.(newDate);
-    } else {
-      onChange?.(undefined);
-    }
-    setOpen(false);
-  };
-
   const handleClear = () => {
     setDate(undefined);
     onChange?.(undefined);
@@ -80,57 +67,27 @@ export function DatePicker({
 
   return (
     <div className={cn("relative w-full", className)}>
-      <Popover open={open} onOpenChange={setOpen}>
-        <div className="relative flex w-full items-center">
-          <Input
-            type="date"
-            value={formatForDisplay(date)}
-            onChange={handleInputChange}
-            className="w-full pr-10"
-            placeholder={placeholder}
-          />
-          <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              type="button"
-              className="absolute right-0 h-full rounded-l-none"
-              onClick={() => setOpen(true)}
-            >
-              <CalendarIcon className="h-4 w-4" />
-              <span className="sr-only">Open calendar</span>
-            </Button>
-          </PopoverTrigger>
-          {clearable && date && (
-            <Button
-              variant="ghost"
-              size="sm"
-              type="button"
-              className="absolute right-8 h-full px-2"
-              onClick={handleClear}
-            >
-              <X className="h-4 w-4" />
-              <span className="sr-only">Clear date</span>
-            </Button>
-          )}
-        </div>
-        <PopoverContent
-          className="w-auto p-0"
-          align="end"
-          alignOffset={5}
-          side="bottom"
-          sideOffset={5}
-          style={{ width: '220px' }}
-        >
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={handleCalendarSelect}
-            initialFocus
-            className="rounded-md border-0"
-          />
-        </PopoverContent>
-      </Popover>
+      <div className="relative flex w-full items-center">
+        <Input
+          type="date"
+          value={formatForDisplay(date)}
+          onChange={handleInputChange}
+          className="w-full pr-10"
+          placeholder={placeholder}
+        />
+        {clearable && date && (
+          <Button
+            variant="ghost"
+            size="sm"
+            type="button"
+            className="absolute right-0 h-full px-2"
+            onClick={handleClear}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Clear date</span>
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

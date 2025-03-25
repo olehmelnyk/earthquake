@@ -12,9 +12,18 @@
         "outputPath": "dist/packages/graphql",
         "main": "packages/graphql/src/index.ts",
         "tsConfig": "packages/graphql/tsconfig.build.json",
-        "assets": ["packages/graphql/*.md"],
+        "assets": [
+          "packages/graphql/*.md",
+          {
+            "glob": ".env*",
+            "input": ".",
+            "output": "."
+          }
+        ],
         "format": ["cjs"],
-        "external": ["graphql", "graphql-tag"]
+        "external": ["graphql", "graphql-tag", "@prisma/client"],
+        "bundle": true,
+        "platform": "node"
       }
     }
   }

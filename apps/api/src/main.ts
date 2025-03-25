@@ -8,7 +8,7 @@ import http from 'http';
 import bodyParser from 'body-parser';
 
 const host = process.env['HOST'] ?? 'localhost';
-const port = process.env['PORT'] ? Number(process.env['PORT']) : 3333;
+const port = process.env['PORT'] ? Number(process.env['PORT']) : 4224;
 
 interface ContextValue {
   prisma: typeof prisma;
@@ -22,6 +22,7 @@ async function startApolloServer() {
   const server = new ApolloServer<ContextValue>({
     typeDefs,
     resolvers,
+    introspection: true, // Enable introspection in all environments
   });
 
   await server.start();
@@ -29,7 +30,7 @@ async function startApolloServer() {
   // Configure CORS and middleware
   app.use(
     '/graphql',
-    cors({
+    cors<cors.CorsRequest>({
       origin: process.env.CORS_ORIGIN || '*', // Allow all origins in development
       methods: ['GET', 'POST', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
@@ -38,16 +39,31 @@ async function startApolloServer() {
     }),
     bodyParser.json(),
     expressMiddleware(server, {
-      context: async () => ({
+      context: async ({ req }) => ({
         prisma,
       }),
     }),
   );
 
-  await new Promise<void>((resolve) => httpServer.listen({ port, host }, resolve));
-  console.log(`[ ready ] http://${host}:${port}/graphql`);
+  // Add a health check endpoint
+  app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+  });
+
+  // Start the server
+  httpServer.listen({ port, host }, () => {
+    console.log(`[ ready ] http://${host}:${port}/graphql`);
+  }).on('error', (error: NodeJS.ErrnoException) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`Error: Port ${port} is already in use. Please make sure no other service is running on this port.`);
+    } else {
+      console.error('Server error:', error);
+    }
+    process.exit(1);
+  });
 }
 
 startApolloServer().catch(err => {
   console.error('Failed to start server:', err);
+  process.exit(1);
 });

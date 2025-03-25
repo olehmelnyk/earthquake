@@ -1,16 +1,13 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:postgres@localhost:5433/earthquake?schema=public"
 }
 
-// Earthquake model based on requirements
 model Earthquake {
   id        String   @id @default(uuid())
   location  String
@@ -19,11 +16,8 @@ model Earthquake {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Add indexes for commonly queried fields
+  @@unique([location, magnitude, date], name: "earthquake_location_magnitude_date_unique")
   @@index([date])
   @@index([magnitude])
   @@index([location])
-
-  // Add unique constraint to prevent duplicate earthquakes
-  @@unique([location, magnitude, date], name: "earthquake_location_magnitude_date_unique")
 }

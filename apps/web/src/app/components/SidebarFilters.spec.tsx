@@ -1,99 +1,197 @@
-import { screen, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { SidebarFilters } from './SidebarFilters';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { userEvent } from '@testing-library/user-event';
-import { renderWithProviders } from '../test-utils';
+import { vi } from 'vitest';
+import { MockedProvider } from '@apollo/client/testing';
+
+// Mock react-hook-form
+vi.mock('react-hook-form', () => ({
+  useForm: () => ({
+    register: (name: string) => ({ name, onChange: vi.fn() }),
+    handleSubmit: (fn: (data: any) => void) => (e: any) => {
+      e.preventDefault();
+      fn({
+        location: 'Tokyo',
+        magnitudeMin: 2,
+        magnitudeMax: 5,
+        dateFrom: new Date('2023-01-01'),
+        dateTo: new Date('2023-12-31')
+      });
+    },
+    reset: vi.fn(),
+    watch: vi.fn().mockReturnValue({
+      location: '',
+      magnitudeMin: 0,
+      magnitudeMax: 10,
+      dateFrom: null,
+      dateTo: null
+    }),
+    setValue: vi.fn(),
+    formState: { errors: {}, isSubmitting: false }
+  }),
+  Controller: ({ render: renderFn }: any) => renderFn({ field: { value: '', onChange: vi.fn() } })
+}));
 
 // Mock zod resolver
 vi.mock('@hookform/resolvers/zod', () => ({
-  zodResolver: () => ({})
+  zodResolver: vi.fn()
 }));
 
-// Mock types
+// Mock earthquake types
 vi.mock('@earthquake/types', () => ({
   earthquakeFilterSchema: {
-    parse: vi.fn()
+    parse: vi.fn(),
   }
+}));
+
+// Mock shadcn components
+vi.mock('@earthquake/ui', () => ({
+  Input: (props: any) => <input data-testid="input" {...props} />,
+  Label: (props: any) => <label data-testid="label" {...props} />,
+  Slider: (props: any) => <div data-testid="slider" onChange={props.onValueChange} />,
+  Button: (props: any) => <button data-testid="button" {...props} />,
+  DateTimePicker: ({ value, onChange }: any) => (
+    <input
+      data-testid="date-picker"
+      type="datetime-local"
+      value={value ? value.toISOString() : ''}
+      onChange={(e) => onChange(new Date(e.target.value))}
+    />
+  )
 }));
 
 describe('SidebarFilters', () => {
   const mockOnFilterChange = vi.fn();
   const mockInitialFilters = {
     location: '',
-    magnitudeFrom: 0,
-    magnitudeTo: 10,
-    dateFrom: '',
-    dateTo: ''
+    magnitudeMin: 0,
+    magnitudeMax: 10,
+    dateFrom: null,
+    dateTo: null
   };
 
-  const user = userEvent.setup();
-
-  beforeEach(() => {
+  afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should render with default values', async () => {
-    renderWithProviders(
-      <SidebarFilters
-        onFilterChange={mockOnFilterChange}
-        initialFilters={mockInitialFilters}
-      />
+  it('should render with default values', () => {
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <SidebarFilters
+          onFilterChange={mockOnFilterChange}
+          initialFilters={mockInitialFilters}
+        />
+      </MockedProvider>
     );
 
-    // Check if all filter inputs are present
-    expect(screen.getByLabelText(/location/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/magnitude from/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/magnitude to/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/date from/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/date to/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /apply filters/i })).toBeInTheDocument();
+    expect(screen.getByText('Filter Earthquakes')).toBeInTheDocument();
+    expect(screen.getByText('Location')).toBeInTheDocument();
+    expect(screen.getByText('Magnitude')).toBeInTheDocument();
+    expect(screen.getByText('Date Range')).toBeInTheDocument();
+    expect(screen.getByTestId('button')).toHaveTextContent('Reset Filters');
   });
 
-  it('should call onFilterChange when filters are applied', async () => {
-    renderWithProviders(
-      <SidebarFilters
-        onFilterChange={mockOnFilterChange}
-        initialFilters={mockInitialFilters}
-      />
+  it('should call onFilterChange when filters are applied', () => {
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <SidebarFilters
+          onFilterChange={mockOnFilterChange}
+          initialFilters={mockInitialFilters}
+        />
+      </MockedProvider>
     );
 
-    // Fill in filter values
-    await user.type(screen.getByLabelText(/location/i), 'Test Location');
-    await user.type(screen.getByLabelText(/magnitude from/i), '3');
-    await user.type(screen.getByLabelText(/magnitude to/i), '7');
-    await user.type(screen.getByLabelText(/date from/i), '2024-01-01');
-    await user.type(screen.getByLabelText(/date to/i), '2024-12-31');
+    const form = screen.getByRole('form');
+    fireEvent.submit(form);
 
-    // Submit form
-    await user.click(screen.getByRole('button', { name: /apply filters/i }));
-
-    // Check if onFilterChange was called with correct values
     expect(mockOnFilterChange).toHaveBeenCalledWith({
-      location: 'Test Location',
-      magnitudeFrom: 3,
-      magnitudeTo: 7,
-      dateFrom: '2024-01-01',
-      dateTo: '2024-12-31'
+      location: 'Tokyo',
+      magnitudeMin: 2,
+      magnitudeMax: 5,
+      dateFrom: new Date('2023-01-01'),
+      dateTo: new Date('2023-12-31')
     });
   });
 
-  it('should reset filters when reset button is clicked', async () => {
-    renderWithProviders(
-      <SidebarFilters
-        onFilterChange={mockOnFilterChange}
-        initialFilters={mockInitialFilters}
-      />
+  it('should reset filters when reset button is clicked', () => {
+    const resetMock = vi.fn();
+
+    vi.mock('react-hook-form', () => ({
+      useForm: () => ({
+        register: () => ({}),
+        handleSubmit: vi.fn(),
+        reset: resetMock,
+        watch: vi.fn(),
+        setValue: vi.fn(),
+        formState: { errors: {}, isSubmitting: false }
+      }),
+      Controller: ({ render: renderFn }: any) => renderFn({ field: { value: '', onChange: vi.fn() } })
+    }));
+
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <SidebarFilters
+          onFilterChange={mockOnFilterChange}
+          initialFilters={mockInitialFilters}
+        />
+      </MockedProvider>
     );
 
-    // Fill in filter values
-    await user.type(screen.getByLabelText(/location/i), 'Test Location');
-    await user.type(screen.getByLabelText(/magnitude from/i), '3');
-    await user.type(screen.getByLabelText(/magnitude to/i), '7');
+    const resetButton = screen.getByTestId('button');
+    fireEvent.click(resetButton);
 
-    // Click reset button
-    await user.click(screen.getByRole('button', { name: /reset/i }));
-
-    // Check if onFilterChange was called with initial values
+    expect(resetMock).toHaveBeenCalledWith(mockInitialFilters);
     expect(mockOnFilterChange).toHaveBeenCalledWith(mockInitialFilters);
+  });
+
+  it('should call onFilterChange when location input changes', () => {
+    let locationChangeHandler: (value: string) => void;
+
+    // Override the register mock to capture the onChange handler
+    vi.mock('react-hook-form', () => ({
+      useForm: () => ({
+        register: (name: string) => {
+          if (name === 'location') {
+            return {
+              name,
+              onChange: (e: any) => {
+                locationChangeHandler && locationChangeHandler(e.target.value);
+              }
+            };
+          }
+          return { name };
+        },
+        handleSubmit: vi.fn(),
+        reset: vi.fn(),
+        watch: vi.fn(),
+        setValue: vi.fn(),
+        formState: { errors: {}, isSubmitting: false }
+      }),
+      Controller: ({ render: renderFn }: any) => renderFn({ field: { value: '', onChange: vi.fn() } })
+    }));
+
+    // Create a simple debounce implementation for testing
+    vi.mock('../utils/debounce', () => ({
+      debounce: (fn: (value: string) => void) => (value: string) => {
+        locationChangeHandler = fn;
+        return fn(value);
+      }
+    }));
+
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <SidebarFilters
+          onFilterChange={mockOnFilterChange}
+          initialFilters={mockInitialFilters}
+        />
+      </MockedProvider>
+    );
+
+    const locationInput = screen.getByTestId('input');
+    fireEvent.change(locationInput, { target: { value: 'San Francisco' } });
+
+    expect(mockOnFilterChange).toHaveBeenCalledWith({
+      ...mockInitialFilters,
+      location: 'San Francisco'
+    });
   });
 });

@@ -17,6 +17,7 @@
     "seed": "npx prisma generate && ts-node seed-data.ts"
   },
   "devDependencies": {
+    "esbuild-register": "^3.6.0",
     "prisma": "^6.5.0",
     "ts-node": "^10.9.2",
     "tsup": "^8.0.1",

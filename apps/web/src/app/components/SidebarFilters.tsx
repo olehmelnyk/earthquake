@@ -128,7 +128,7 @@ export const SidebarFilters: FC<SidebarFiltersProps> = ({
                           step={0.1}
                           value={[
                             Number(field.value) || 0,
-                            Number(form.getValues('magnitudeTo')) || 10,
+                            Number(form.getValues('magnitudeTo')) || defaultValues.magnitudeTo,
                           ]}
                           onValueChange={(values: number[]) => {
                             field.onChange(values[0]);
@@ -143,10 +143,10 @@ export const SidebarFilters: FC<SidebarFiltersProps> = ({
               </div>
               <div className="flex justify-between text-xs">
                 <div className="bg-muted py-1 px-2 rounded-md">
-                  Min: <span className="font-medium">{form.watch('magnitudeFrom')?.toFixed(1)}</span>
+                  Min: <span className="font-medium">{(form.watch('magnitudeFrom') || 0).toFixed(1)}</span>
                 </div>
                 <div className="bg-muted py-1 px-2 rounded-md">
-                  Max: <span className="font-medium">{form.watch('magnitudeTo')?.toFixed(1)}</span>
+                  Max: <span className="font-medium">{(form.watch('magnitudeTo') || defaultValues.magnitudeTo).toFixed(1)}</span>
                 </div>
               </div>
             </div>

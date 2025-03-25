@@ -30,12 +30,14 @@
   - Pages: actual pages (in apps/web)
 
 ## Coding rules
+- If you are getting stuck (>5 unsuccessfull atempts) and runing in circles - read official docs, check exisitng github repos with similar stack, or just google
 - Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.
 - For UI components
   - Mark the props of the component as read-only.
 - For test
   - for location - use `lat, long`, ex: `10, -10` instead of `Tokyo, Japan` or `San Francisco, CA`
   - use `test-id` if neeed, avoide selectors by tag/class, or by text - since thay may change in future
+  - the only one ocorrectway to mock Apollo Client is to use `import { MockedProvider } from '@apollo/client/testing'`;
 - For terminal
   - never run `pnpm nx graph` - it's uselss and you just hangout
 

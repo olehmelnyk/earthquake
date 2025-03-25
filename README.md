@@ -26,6 +26,8 @@ A monorepo application for tracking earthquake data built with NX, Next.js, Expr
 
 ```bash
 pnpm install
+
+# not sure why it's not installing automatically - try this, but may still need to manually install those packages deps
 pnpm install --filter @earthquake/types --filter @earthquake/graphql --filter @earthquake/web --filter @earthquake/db
 ```
 
@@ -66,8 +68,7 @@ pnpm db:migrate
 ./scripts/download-earthquake-data.sh
 
 # Then seed the database
-cd packages/db
-pnpm run seed
+pnpm db:seed
 ```
 
 The seed script imports earthquake data from the CSV file located at `packages/db/data/earthquakes.csv`.
@@ -80,7 +81,7 @@ pnpm dev
 
 This will start:
 - Frontend: http://localhost:4200
-- Backend API: http://localhost:3333/graphql
+- Backend API: http://localhost:4224/graphql
 
 ## Available Scripts
 

@@ -5,8 +5,9 @@ import { ReactNode, useMemo } from 'react';
 
 export function ApolloWrapper({ children }: { children: ReactNode }) {
   const client = useMemo(() => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4224/graphql';
     return new ApolloClient({
-      uri: 'http://localhost:3333/graphql',
+      uri: apiUrl,
       cache: new InMemoryCache(),
     });
   }, []);

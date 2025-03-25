@@ -1,47 +1,76 @@
-import { ReactNode } from 'react';
+import React from 'react';
 import { render, RenderOptions, RenderResult } from '@testing-library/react';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
-import { ThemeProvider } from 'next-themes';
-
-interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
-  mocks?: MockedResponse[];
-  theme?: string;
-}
-
-export function renderWithProviders(
-  ui: React.ReactElement,
-  {
-    mocks = [],
-    theme = 'light',
-    ...renderOptions
-  }: CustomRenderOptions = {}
-): RenderResult {
-  function Wrapper({ children }: { children: ReactNode }) {
-    return (
-      <MockedProvider
-        mocks={mocks}
-        addTypename={false}
-        defaultOptions={{
-          watchQuery: { fetchPolicy: 'no-cache' },
-          query: { fetchPolicy: 'no-cache' },
-        }}
-      >
-        <ThemeProvider defaultTheme={theme} enableSystem={false} data-testid="theme-provider">
-          {children}
-        </ThemeProvider>
-      </MockedProvider>
-    );
-  }
-
-  return {
-    ...render(ui, { wrapper: Wrapper, ...renderOptions }),
-  };
-}
-
-// Helper function to wait for Apollo operations
-export const waitForApolloLoading = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 0));
-};
+import { vi } from 'vitest';
 
 // Re-export everything
 export * from '@testing-library/react';
+
+// Helper function to wait for Apollo operations to complete
+export const waitForApolloLoading = async (): Promise<void> => {
+  await new Promise((resolve) => setTimeout(resolve, 0));
+};
+
+// Create a wrapper that provides the necessary context providers
+interface CustomRenderOptions extends RenderOptions {
+  mocks?: MockedResponse[];
+  addTypename?: boolean;
+}
+
+// Mock toast function
+const mockToast = vi.fn();
+
+// Mock UI components
+vi.mock('@earthquake/ui', () => ({
+  useToast: () => ({ toast: mockToast }),
+  Toaster: () => null,
+  Button: ({ children, onClick }: any) => (
+    <button onClick={onClick}>{children}</button>
+  ),
+  Dialog: ({ children }: any) => <div role="dialog">{children}</div>,
+  AlertDialog: ({ children }: any) => <div role="alertdialog">{children}</div>,
+}));
+
+// Mock next-themes
+vi.mock('next-themes', () => ({
+  ThemeProvider: ({ children }: any) => <>{children}</>,
+  useTheme: () => ({
+    theme: 'light',
+    setTheme: vi.fn(),
+    resolvedTheme: 'light',
+    themes: ['light', 'dark', 'system'],
+  }),
+}));
+
+// Mock next/navigation
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    refresh: vi.fn(),
+  }),
+  useSearchParams: () => ({
+    get: vi.fn(),
+    toString: () => '',
+  }),
+  usePathname: () => '/dashboard',
+}));
+
+export const renderWithProviders = (
+  ui: React.ReactElement,
+  {
+    mocks = [],
+    addTypename = false,
+    ...renderOptions
+  }: CustomRenderOptions = {}
+): RenderResult => {
+  const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
+    return (
+      <MockedProvider mocks={mocks} addTypename={addTypename}>
+        {children}
+      </MockedProvider>
+    );
+  };
+
+  return render(ui, { wrapper: AllTheProviders, ...renderOptions });
+};

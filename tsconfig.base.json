@@ -19,7 +19,6 @@
       "@earthquake/graphql": ["packages/graphql/src/index.ts"],
       "@earthquake/types": ["packages/types/src/index.ts"],
       "@earthquake/ui": ["packages/ui/src/index.ts"],
-      "@earthquake/ui/schemas": ["packages/ui/src/schemas.ts"],
       "@earthquake/ui/*": ["packages/ui/src/*"]
     }
   },

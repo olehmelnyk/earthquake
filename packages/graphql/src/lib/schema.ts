@@ -165,7 +165,6 @@ export const resolvers = {
         // Simple contains search for location
         where.location = {
           contains: filter.location,
-          mode: 'insensitive',
         };
       }
 
@@ -188,6 +187,18 @@ export const resolvers = {
         }),
         prisma.earthquake.count({ where }),
       ]);
+
+      console.log('Query parameters:', {
+        where,
+        orderBy,
+        skip,
+        take: limit,
+      });
+      console.log('Query results:', {
+        dataLength: data.length,
+        totalCount: count,
+        hasMore: skip + data.length < count,
+      });
 
       return {
         data,

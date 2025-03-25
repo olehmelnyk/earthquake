@@ -5,90 +5,39 @@ import { z } from 'zod';
 
 // Define strong types for our CSV data structure
 interface RawCsvRecord {
+  DateTime?: string;
+  Latitude?: string;
+  Longitude?: string;
+  Magnitude?: string;
   [key: string]: string | undefined;
-}
-
-// Create a Zod schema for validating earthquake data
-const EarthquakeSchema = z.object({
-  location: z.string().transform((val) => {
-    // Convert 3rd party location format to our required format
-    // Expecting something like "34.0522,-118.2437" (no space after comma)
-    if (val.includes(', ')) {
-      // Format already has space after comma
-      return val;
-    } else if (val.includes(',')) {
-      // Format has no space after comma, so add one
-      const [lat, long] = val.split(',');
-      return `${lat}, ${long}`;
-    }
-    return val;
-  }).refine(
-    (val) => {
-      // Check if location is in format "latitude, longitude" with optional space after comma
-      const regex = /^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/;
-      if (!regex.test(val)) return false;
-
-      // Extract and validate latitude and longitude values
-      const [latStr, longStr] = val.split(',').map(s => s.trim());
-      const lat = parseFloat(latStr);
-      const long = parseFloat(longStr);
-
-      // Latitude: -90 to 90, Longitude: -180 to 180
-      return !isNaN(lat) && !isNaN(long) &&
-             lat >= -90 && lat <= 90 && // -90° (South Pole), +90° (North Pole)
-             long >= -180 && long <= 180; // -180° (west of the Prime Meridian), +180° (east of the Prime Meridian)
-    },
-    {
-      message: "Location must be in format 'latitude, longitude' with values in valid ranges (lat: -90 to 90, long: -180 to 180)",
-    }
-  ),
-  magnitude: z.string().or(z.number()).transform(val =>
-    typeof val === 'number' ? String(val) : val
-  ).refine(
-    (val) => {
-      const num = parseFloat(val);
-      return !isNaN(num) && num >= 0.1 && num <= 10;
-    },
-    {
-      message: "Magnitude must be a number between 0.1 and 10",
-    }
-  ),
-  date: z.string().refine(
-    (val) => {
-      const date = new Date(val);
-      return !isNaN(date.getTime()) && date <= new Date();
-    },
-    {
-      message: "Date must be valid and not in the future",
-    }
-  ),
-});
-
-// Type that represents the validated earthquake data
-type ValidatedEarthquake = z.infer<typeof EarthquakeSchema>;
-
-// Type for our database record preparation
-interface EarthquakeRecord {
-  location: string;
-  magnitude: number;
-  date: Date;
 }
 
 interface ValidationSummary {
   totalRecords: number;
   validRecords: number;
   invalidRecords: number;
-  errorsByField: Record<string, number>;
+  errorsByField?: Record<string, number>;
 }
 
-/**
- * Import earthquake data from CSV
- * @param filePath Path to the CSV file
- */
+// Create a Zod schema for validating earthquake data
+const EarthquakeSchema = z.object({
+  location: z.string().min(1),
+  magnitude: z.number().min(0.1).max(10),
+  date: z.date().max(new Date())
+}).strict();
+
+type ValidatedEarthquake = z.infer<typeof EarthquakeSchema>;
+
 export async function importEarthquakesFromCSV(filePath: string): Promise<ValidationSummary> {
+  console.log(`Reading earthquake data from ${filePath}`);
+
   const allResults: RawCsvRecord[] = [];
   const validResults: ValidatedEarthquake[] = [];
-  const errorsByField: Record<string, number> = {};
+  const errorsByField: Record<string, number> = {
+    location: 0,
+    magnitude: 0,
+    date: 0
+  };
 
   // Read and parse the CSV file
   await new Promise<void>((resolve, reject) => {
@@ -107,27 +56,67 @@ export async function importEarthquakesFromCSV(filePath: string): Promise<Valida
 
   console.log(`Found ${allResults.length} entries in CSV file`);
 
-  // Validate each record
+  // Process the records
   for (const row of allResults) {
     try {
-      // Parse and validate the data
-      const validData = EarthquakeSchema.parse(row);
-      validResults.push(validData);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        // Track validation errors by field
-        error.errors.forEach((err) => {
-          const field = err.path.join('.') || 'unknown';
+      const latitude = row.Latitude;
+      const longitude = row.Longitude;
+      const magnitude = row.Magnitude;
+      const dateTime = row.DateTime;
+
+      if (!latitude || !longitude || !magnitude || !dateTime) {
+        continue;
+      }
+
+      // Format location as "latitude, longitude" with 3 decimal places
+      const location = `${parseFloat(latitude).toFixed(3)}, ${parseFloat(longitude).toFixed(3)}`;
+
+      // Parse date - format is "YYYY/MM/DD HH:MM:SS.SS"
+      let date: Date;
+      try {
+        const [datePart, timePart] = dateTime.split(' ');
+        const [year, month, day] = datePart.split('/').map(Number);
+        const [hours, minutes, seconds] = timePart.split(':').map(val => parseFloat(val));
+
+        date = new Date(year, month - 1, day, hours, minutes, Math.floor(seconds));
+        if (isNaN(date.getTime())) {
+          errorsByField['date'] = (errorsByField['date'] || 0) + 1;
+          continue;
+        }
+      } catch (error) {
+        console.warn(`Error parsing date ${dateTime}:`, error);
+        errorsByField['date'] = (errorsByField['date'] || 0) + 1;
+        continue;
+      }
+
+      // Parse magnitude
+      const magnitudeNum = parseFloat(magnitude);
+      if (isNaN(magnitudeNum)) {
+        errorsByField['magnitude'] = (errorsByField['magnitude'] || 0) + 1;
+        continue;
+      }
+
+      // Validate using Zod schema
+      const validatedData = EarthquakeSchema.safeParse({
+        location,
+        magnitude: magnitudeNum,
+        date
+      });
+
+      if (validatedData.success) {
+        validResults.push(validatedData.data);
+      } else {
+        validatedData.error.errors.forEach(err => {
+          const field = err.path[0] as string;
           errorsByField[field] = (errorsByField[field] || 0) + 1;
         });
       }
+    } catch (error) {
+      console.warn('Error processing record:', error);
     }
   }
 
   console.log(`Validated ${validResults.length} out of ${allResults.length} records`);
-  Object.entries(errorsByField).forEach(([field, count]) => {
-    console.log(`- ${field}: ${count} errors`);
-  });
 
   // Process data in batches to avoid memory issues
   const batchSize = 1000;
@@ -142,16 +131,13 @@ export async function importEarthquakesFromCSV(filePath: string): Promise<Valida
     const batch = validResults.slice(start, end);
 
     try {
-      // Transform the batch data
-      const data: EarthquakeRecord[] = batch.map(row => ({
-        location: row.location,
-        magnitude: parseFloat(row.magnitude),
-        date: new Date(row.date),
-      }));
-
-      // Insert batch
+      // Insert batch with explicit type assertion
       const result = await prisma.earthquake.createMany({
-        data,
+        data: batch as Array<{
+          location: string;
+          magnitude: number;
+          date: Date;
+        }>,
         skipDuplicates: true, // Skip records that might cause unique constraint violations
       });
 

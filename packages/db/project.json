@@ -13,7 +13,14 @@
         "outputPath": "dist/packages/db",
         "main": "packages/db/src/index.ts",
         "tsConfig": "packages/db/tsconfig.build.json",
-        "assets": ["packages/db/*.md"],
+        "assets": [
+          "packages/db/*.md",
+          {
+            "glob": ".env*",
+            "input": ".",
+            "output": "."
+          }
+        ],
         "format": ["cjs"],
         "external": ["@prisma/client"]
       }
