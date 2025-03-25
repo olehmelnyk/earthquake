@@ -3,7 +3,6 @@
 import React, { type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import dayjs from 'dayjs';
 import {
   Form,
   FormControl,
@@ -17,12 +16,14 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  earthquakeFilterSchema,
-  type EarthquakeFilterValues,
   Badge,
   Separator,
   DatePicker
 } from '@earthquake/ui';
+import {
+  earthquakeFilterSchema,
+  type EarthquakeFilterValues
+} from '@earthquake/types';
 
 interface SidebarFiltersProps {
   readonly onFilterChange: (filters: EarthquakeFilterValues) => void;
@@ -59,13 +60,15 @@ export const SidebarFilters: FC<SidebarFiltersProps> = ({
   const activeFilterCount = React.useMemo(() => {
     const values = form.getValues();
     let count = 0;
+
     if (values.location) count++;
-    if (values.magnitudeFrom > 0) count++;
-    if (values.magnitudeTo < 10) count++;
+    if (values?.magnitudeFrom && values.magnitudeFrom > 0) count++;
+    if (values?.magnitudeTo && values.magnitudeTo < 10) count++;
     if (values.dateFrom) count++;
     if (values.dateTo) count++;
+
     return count;
-  }, [form.watch()]);
+  }, [form]);
 
   function onSubmit(data: EarthquakeFilterValues) {
     onFilterChange(data);
@@ -140,10 +143,10 @@ export const SidebarFilters: FC<SidebarFiltersProps> = ({
               </div>
               <div className="flex justify-between text-xs">
                 <div className="bg-muted py-1 px-2 rounded-md">
-                  Min: <span className="font-medium">{form.watch('magnitudeFrom').toFixed(1)}</span>
+                  Min: <span className="font-medium">{form.watch('magnitudeFrom')?.toFixed(1)}</span>
                 </div>
                 <div className="bg-muted py-1 px-2 rounded-md">
-                  Max: <span className="font-medium">{form.watch('magnitudeTo').toFixed(1)}</span>
+                  Max: <span className="font-medium">{form.watch('magnitudeTo')?.toFixed(1)}</span>
                 </div>
               </div>
             </div>

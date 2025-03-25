@@ -304,7 +304,6 @@ export const EarthquakeTable: FC<EarthquakeTableProps> = ({
         onPageChange={onPageChange}
         onPageSizeChange={onPageSizeChange}
         showTopPagination={false}
-        className="h-full"
       />
       {earthquakes.length === 0 && (
         <div className="text-center py-10 text-muted-foreground">

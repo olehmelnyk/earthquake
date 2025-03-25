@@ -5,13 +5,8 @@ import { SidebarFilters } from './SidebarFilters';
 import { EarthquakeTable, type Earthquake } from './EarthquakeTable';
 import { EarthquakeForm } from './EarthquakeForm';
 import { ModeToggle } from './ModeToggle';
-import {
-  Button,
-  earthquakeFormSchema,
-  earthquakeFilterSchema,
-  type EarthquakeFormValues,
-  type EarthquakeFilterValues
-} from '@earthquake/ui';
+import { Button } from '@earthquake/ui';
+import type { EarthquakeFilterValues, EarthquakeFormValues } from '@earthquake/types';
 import { useEarthquakeData, EarthquakeFilterVariables } from '../hooks/useEarthquakeData';
 import { useQueryParams, SortConfig } from '../hooks/useQueryParams';
 
@@ -142,7 +137,7 @@ export const Dashboard: FC = () => {
     if (sort.field !== urlSort.field || sort.direction !== urlSort.direction) {
       setSort(urlSort);
     }
-  }, [getFiltersFromQuery, getPageFromQuery, getSortFromQuery]);
+  }, [getFiltersFromQuery, getPageFromQuery, getSortFromQuery, filters, page, sort]);
 
   useEffect(() => {
     if (error) {
@@ -150,7 +145,7 @@ export const Dashboard: FC = () => {
     }
   }, [error]);
 
-  const totalCount = earthquakeData?.count || 0;
+  const totalCount = earthquakeData?.count ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
   return (

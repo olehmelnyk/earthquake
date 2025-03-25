@@ -26,7 +26,13 @@ export function EarthquakeDeleteButton({
   onDelete
 }: EarthquakeDeleteButtonProps) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const { success, error } = useToast();
+  const { toast } = useToast();
+
+  const success = (props: { title: string; description: string }) =>
+    toast({ ...props, variant: "default" });
+
+  const error = (props: { title: string; description: string }) =>
+    toast({ ...props, variant: "destructive" });
 
   const handleDelete = async () => {
     try {

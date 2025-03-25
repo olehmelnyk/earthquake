@@ -1,0 +1,111 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ModeToggle > should match snapshot 1`] = `
+<div>
+  <div
+    data-testid="dropdown-menu"
+  >
+    <div
+      data-testid="dropdown-trigger"
+    >
+      <button
+        class="h-9 w-9"
+        variant="outline"
+      >
+        <div
+          data-testid="sun-icon"
+        >
+          Sun
+        </div>
+        <div
+          data-testid="moon-icon"
+        >
+          Moon
+        </div>
+        <span
+          class="sr-only"
+        >
+          Toggle theme
+        </span>
+      </button>
+    </div>
+    <div
+      data-testid="dropdown-content"
+    >
+      <button
+        class="bg-accent"
+        role="menuitem"
+      >
+        Light
+      </button>
+      <button
+        class=""
+        role="menuitem"
+      >
+        Dark
+      </button>
+      <button
+        class=""
+        role="menuitem"
+      >
+        System
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ModeToggle > should match snapshot with dropdown open 1`] = `
+<div>
+  <div
+    data-testid="dropdown-menu"
+  >
+    <div
+      data-testid="dropdown-trigger"
+    >
+      <button
+        class="h-9 w-9"
+        variant="outline"
+      >
+        <div
+          data-testid="sun-icon"
+        >
+          Sun
+        </div>
+        <div
+          data-testid="moon-icon"
+        >
+          Moon
+        </div>
+        <span
+          class="sr-only"
+        >
+          Toggle theme
+        </span>
+      </button>
+    </div>
+    <div
+      data-testid="dropdown-content"
+    >
+      <button
+        class="bg-accent"
+        role="menuitem"
+      >
+        Light
+      </button>
+      <button
+        class=""
+        role="menuitem"
+      >
+        Dark
+      </button>
+      <button
+        class=""
+        role="menuitem"
+      >
+        System
+      </button>
+    </div>
+  </div>
+</div>
+`;

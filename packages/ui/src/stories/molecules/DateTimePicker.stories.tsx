@@ -1,7 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { DateTimePicker } from '../../lib/molecules/date-time-picker';
 import { useState } from 'react';
-import React from 'react';
+
+// Type alias for date value
+type DateTimeValue = Date | string | undefined;
+type DateTimePickerProps = React.ComponentProps<typeof DateTimePicker>;
 
 const meta: Meta<typeof DateTimePicker> = {
   title: 'Molecules/DateTimePicker',
@@ -34,8 +37,8 @@ export default meta;
 type Story = StoryObj<typeof DateTimePicker>;
 
 // Basic date-time picker
-const DefaultDateTimePicker = (props: any) => {
-  const [date, setDate] = useState<Date | string | undefined>(undefined);
+const DefaultDateTimePicker = (props: DateTimePickerProps) => {
+  const [date, setDate] = useState<DateTimeValue>(undefined);
   return (
     <div style={{ width: '300px' }}>
       <DateTimePicker
@@ -56,8 +59,8 @@ export const Default: Story = {
 };
 
 // With pre-selected date and time
-const PreSelectedDateTimePicker = (props: any) => {
-  const [date, setDate] = useState<Date | string | undefined>(new Date());
+const PreSelectedDateTimePicker = (props: DateTimePickerProps) => {
+  const [date, setDate] = useState<DateTimeValue>(new Date());
   return (
     <div style={{ width: '300px' }}>
       <DateTimePicker
@@ -78,46 +81,20 @@ export const WithSelectedDateTime: Story = {
 };
 
 // Without clear button
-const NonClearableDateTimePicker = (props: any) => {
-  const [date, setDate] = useState<Date | string | undefined>(undefined);
-  return (
-    <div style={{ width: '300px' }}>
-      <DateTimePicker
-        {...props}
-        value={date}
-        onChange={(newDate) => setDate(newDate)}
-      />
-    </div>
-  );
-};
-
 export const WithoutClearButton: Story = {
   args: {
     placeholder: 'Select date and time',
     clearable: false,
   },
-  render: (args) => <NonClearableDateTimePicker {...args} />,
+  render: (args) => <DefaultDateTimePicker {...args} />,
 };
 
 // With custom styling
-const CustomStyledDateTimePicker = (props: any) => {
-  const [date, setDate] = useState<Date | string | undefined>(undefined);
-  return (
-    <div style={{ width: '300px' }}>
-      <DateTimePicker
-        {...props}
-        value={date}
-        onChange={(newDate) => setDate(newDate)}
-      />
-    </div>
-  );
-};
-
 export const CustomStyling: Story = {
   args: {
     placeholder: 'Custom date and time',
     clearable: true,
     className: 'border-2 border-primary rounded-xl',
   },
-  render: (args) => <CustomStyledDateTimePicker {...args} />,
+  render: (args) => <DefaultDateTimePicker {...args} />,
 };

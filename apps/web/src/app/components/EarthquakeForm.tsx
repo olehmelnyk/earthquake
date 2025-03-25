@@ -3,7 +3,6 @@
 import React, { type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import dayjs from 'dayjs';
 import {
   Form,
@@ -17,11 +16,13 @@ import {
   Card,
   CardContent,
   Separator,
-  earthquakeFormSchema,
-  type EarthquakeFormValues,
   DateTimePicker
 } from '@earthquake/ui';
 import { type Earthquake } from './EarthquakeTable';
+import {
+  type EarthquakeFormValues,
+  earthquakeFormSchema
+} from '@earthquake/types';
 
 interface EarthquakeFormProps {
   earthquake?: Earthquake;

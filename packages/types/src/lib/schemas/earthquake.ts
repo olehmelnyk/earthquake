@@ -53,11 +53,11 @@ export const magnitudeRangeSchema = {
 
 export const dateRangeSchema = {
   dateFrom: z.string().optional().refine(
-    (val) => validateDateTime(val, true), // Allow future dates for filtering
+    (val) => validateDateTime(val, false), // Allow future dates for filtering
     { message: "Date From must be a valid date" }
   ),
   dateTo: z.string().optional().refine(
-    (val) => validateDateTime(val, true), // Allow future dates for filtering
+    (val) => validateDateTime(val, false), // Allow future dates for filtering
     { message: "Date To must be a valid date" }
   ),
 };
@@ -110,17 +110,5 @@ export const earthquakeFormSchema = z.object({
 export type EarthquakeFilterValues = z.infer<typeof earthquakeFilterSchema>;
 export type EarthquakeFormValues = z.infer<typeof earthquakeFormSchema>;
 
-export const EarthquakeSchema = z.object({
-  id: z.string().optional(),
-  location: z.string().min(1, { message: 'Location is required' }),
-  magnitude: z.number({
-    required_error: 'Magnitude is required',
-    invalid_type_error: 'Magnitude must be a number',
-  }).min(0, { message: 'Magnitude must be a positive number' }),
-  date: z.date({
-    required_error: 'Date is required',
-    invalid_type_error: 'Invalid date format',
-  }),
-});
-
-export type Earthquake = z.infer<typeof EarthquakeSchema>;
+// Export an alias for components expecting 'EarthquakeSchema'
+export const EarthquakeSchema = earthquakeFormSchema;

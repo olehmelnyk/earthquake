@@ -26,16 +26,17 @@ A monorepo application for tracking earthquake data built with NX, Next.js, Expr
 
 ```bash
 pnpm install
+pnpm install --filter @earthquake/types --filter @earthquake/graphql --filter @earthquake/web --filter @earthquake/db
 ```
 
 3. Set up environment variables:
 
 ```bash
 # For the API
-cp apps/api/.env.example apps/api/.env
+cp apps/api/.env.example apps/api/.env # if .env.local does not exists
 
 # For the web app (if not already existing)
-cp apps/web/.env.local.example apps/web/.env.local # if .env.local.example exists
+cp apps/web/.env.example apps/web/.env # if .env.local does not exists
 ```
 
 Make sure to update the environment variables with your specific configuration if needed.

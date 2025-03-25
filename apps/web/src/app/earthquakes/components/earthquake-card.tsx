@@ -40,7 +40,7 @@ export function EarthquakeCard({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{magnitude.toFixed(1)}</div>
+        <div className="text-2xl font-bold" data-testid="magnitude">{magnitude.toFixed(1)}</div>
         <p className="text-xs text-muted-foreground mt-1">
           {date.toLocaleString()}
         </p>

@@ -1,7 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { DatePicker } from '../../lib/molecules/date-picker';
-import { useState } from 'react';
-import React from 'react';
+import React, { useState } from 'react';
+
+// Type alias for the date value
+type DateValue = Date | string | undefined;
+type DatePickerProps = React.ComponentProps<typeof DatePicker>;
 
 const meta: Meta<typeof DatePicker> = {
   title: 'Molecules/DatePicker',
@@ -34,8 +37,8 @@ export default meta;
 type Story = StoryObj<typeof DatePicker>;
 
 // Basic date picker
-const DefaultDatePicker = (props: any) => {
-  const [date, setDate] = useState<Date | string | undefined>(undefined);
+const DefaultDatePicker = (props: DatePickerProps) => {
+  const [date, setDate] = useState<DateValue>(undefined);
   return (
     <div style={{ width: '300px' }}>
       <DatePicker
@@ -56,8 +59,8 @@ export const Default: Story = {
 };
 
 // With pre-selected date
-const PreSelectedDatePicker = (props: any) => {
-  const [date, setDate] = useState<Date | string | undefined>(new Date());
+const PreSelectedDatePicker = (props: DatePickerProps) => {
+  const [date, setDate] = useState<DateValue>(new Date());
   return (
     <div style={{ width: '300px' }}>
       <DatePicker
@@ -78,46 +81,20 @@ export const WithSelectedDate: Story = {
 };
 
 // Without clear button
-const NonClearableDatePicker = (props: any) => {
-  const [date, setDate] = useState<Date | string | undefined>(undefined);
-  return (
-    <div style={{ width: '300px' }}>
-      <DatePicker
-        {...props}
-        value={date}
-        onChange={(newDate) => setDate(newDate)}
-      />
-    </div>
-  );
-};
-
 export const WithoutClearButton: Story = {
   args: {
     placeholder: 'Select date',
     clearable: false,
   },
-  render: (args) => <NonClearableDatePicker {...args} />,
+  render: (args) => <DefaultDatePicker {...args} />,
 };
 
 // With custom styling
-const CustomStyledDatePicker = (props: any) => {
-  const [date, setDate] = useState<Date | string | undefined>(undefined);
-  return (
-    <div style={{ width: '300px' }}>
-      <DatePicker
-        {...props}
-        value={date}
-        onChange={(newDate) => setDate(newDate)}
-      />
-    </div>
-  );
-};
-
 export const CustomStyling: Story = {
   args: {
     placeholder: 'Select custom date',
     clearable: true,
     className: 'border-2 border-primary rounded-xl',
   },
-  render: (args) => <CustomStyledDatePicker {...args} />,
+  render: (args) => <DefaultDatePicker {...args} />,
 };

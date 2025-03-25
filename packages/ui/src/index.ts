@@ -1,3 +1,7 @@
+// Types export first
+export * from './lib/types';
+export * from './lib/utils';
+
 // Atoms
 export * from './lib/atoms/button';
 export * from './lib/atoms/input';
@@ -28,12 +32,6 @@ export * from './lib/organisms/data-table/data-table';
 export * from './lib/organisms/data-table/data-table-pagination';
 export * from './lib/organisms/data-table/table';
 
-// Utils
-export * from './lib/utils';
-
 // Hooks
 export * from './lib/hooks/use-toast';
 export * from './lib/hooks/use-theme';
-
-// Schemas - Export everything from the earthquake schema
-export * from './lib/schemas/earthquake';

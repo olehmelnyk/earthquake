@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { withNx } = require('@nx/next/plugins/with-nx');
+const path = require('path');
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
@@ -18,11 +19,29 @@ const nextConfig = {
   output: 'standalone',
   // Use React strict mode
   reactStrictMode: true,
-  // Handle CSS imports from the UI package
-  transpilePackages: ['@earthquake/ui'],
-  // Add experimental features to resolve packages from source
+  // Handle workspace package imports
+  transpilePackages: [
+    '@earthquake/ui',
+    '@earthquake/types',
+    '@earthquake/graphql',
+    '@earthquake/db'
+  ],
+  // Resolve packages from source in development
   experimental: {
     externalDir: true
+  },
+  // Custom webpack configuration to handle workspace packages
+  webpack: (config, { isServer }) => {
+    // Configure proper resolution for packages in development
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@earthquake/ui': path.resolve(__dirname, '../../packages/ui/src'),
+      '@earthquake/types': path.resolve(__dirname, '../../packages/types/src'),
+      '@earthquake/graphql': path.resolve(__dirname, '../../packages/graphql/src'),
+      '@earthquake/db': path.resolve(__dirname, '../../packages/db/src')
+    };
+
+    return config;
   }
 };
 

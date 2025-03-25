@@ -2,7 +2,9 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Calendar } from '../../lib/atoms/calendar';
 import { useState } from 'react';
 import { addDays } from 'date-fns';
-import React from 'react';
+import type { DateRange } from '../../lib/types';
+
+type CalendarProps = React.ComponentProps<typeof Calendar>;
 
 const meta: Meta<typeof Calendar> = {
   title: 'Atoms/Calendar',
@@ -32,7 +34,7 @@ export default meta;
 type Story = StoryObj<typeof Calendar>;
 
 // Single date selection
-const SingleCalendar = (props: any) => {
+const SingleCalendar = (props: CalendarProps) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   return (
     <div className="border rounded-md">
@@ -56,7 +58,7 @@ export const SingleSelection: Story = {
 };
 
 // Multiple selection
-const MultipleCalendar = (props: any) => {
+const MultipleCalendar = (props: CalendarProps) => {
   const [dates, setDates] = useState<Date[] | undefined>([
     new Date(),
     addDays(new Date(), 2),
@@ -84,11 +86,8 @@ export const MultipleSelection: Story = {
 };
 
 // Range selection
-const RangeCalendar = (props: any) => {
-  const [dateRange, setDateRange] = useState<{
-    from: Date;
-    to?: Date;
-  }>({
+const RangeCalendar = (props: CalendarProps) => {
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 7),
   });
@@ -98,7 +97,11 @@ const RangeCalendar = (props: any) => {
         {...props}
         mode="range"
         selected={dateRange}
-        onSelect={setDateRange}
+        onSelect={(range: DateRange | undefined) => {
+          if (range && 'from' in range) {
+            setDateRange(range);
+          }
+        }}
         className="rounded-md"
       />
     </div>
@@ -114,25 +117,10 @@ export const RangeSelection: Story = {
 };
 
 // Without outside days
-const CalendarWithoutOutsideDays = (props: any) => {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  return (
-    <div className="border rounded-md">
-      <Calendar
-        {...props}
-        mode="single"
-        selected={date}
-        onSelect={setDate}
-        className="rounded-md"
-      />
-    </div>
-  );
-};
-
 export const WithoutOutsideDays: Story = {
   args: {
     mode: 'single',
     showOutsideDays: false,
   },
-  render: (args) => <CalendarWithoutOutsideDays {...args} />,
+  render: (args) => <SingleCalendar {...args} />,
 };

@@ -1,11 +1,16 @@
 import { Edit } from 'lucide-react';
 import { Button } from '@earthquake/ui';
 
-export const EarthquakeEditButton = ({ onClick }: { onClick: () => void }) => (
+export interface EarthquakeEditButtonProps {
+  readonly id: string;
+  readonly onEdit: (id: string) => void;
+}
+
+export const EarthquakeEditButton = ({ id, onEdit }: EarthquakeEditButtonProps) => (
   <Button
     variant="ghost"
     size="icon"
-    onClick={onClick}
+    onClick={() => onEdit(id)}
     className="h-8 w-8"
   >
     <Edit className="h-4 w-4" />

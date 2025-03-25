@@ -168,7 +168,13 @@ function toast({ ...props }: Toast) {
   };
 }
 
-function useToast() {
+// Export the ToastHookReturn type so components can properly type the hook's return value
+export interface ToastHookReturn extends State {
+  toast: typeof toast;
+  dismiss: (toastId?: string) => void;
+}
+
+function useToast(): ToastHookReturn {
   const [state, setState] = React.useState<State>(memoryState);
 
   React.useEffect(() => {

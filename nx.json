@@ -94,7 +94,7 @@
       "implicitDependencies": ["db", "graphql"]
     },
     "web": {
-      "implicitDependencies": ["graphql", "ui"]
+      "implicitDependencies": ["graphql", "ui", "types"]
     }
   },
   "generators": {

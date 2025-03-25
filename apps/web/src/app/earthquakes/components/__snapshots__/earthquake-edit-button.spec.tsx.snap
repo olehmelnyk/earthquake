@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EarthquakeEditButton > should match snapshot 1`] = `
+<div>
+  <button
+    class="h-8 w-8"
+    data-size="icon"
+    data-testid="edit-button"
+    data-variant="ghost"
+  >
+    <span
+      data-testid="edit-icon"
+    >
+      Edit
+    </span>
+    <span
+      class="sr-only"
+    >
+      Edit
+    </span>
+  </button>
+</div>
+`;

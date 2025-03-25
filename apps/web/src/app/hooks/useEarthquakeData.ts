@@ -1,10 +1,9 @@
-import { gql, useQuery, useMutation } from '@apollo/client';
-import { ApolloError } from '@apollo/client';
+import { gql, useQuery, useMutation, ApolloError } from '@apollo/client';
 import { useToast } from '@earthquake/ui';
+import type { EarthquakeFormValues } from '@earthquake/types';
 import { Earthquake } from '../components/EarthquakeTable';
 import dayjs from 'dayjs';
 import { SortConfig } from './useQueryParams';
-import { type EarthquakeFormValues } from '@earthquake/ui';
 
 export const GET_EARTHQUAKES = gql`
   query GetEarthquakes(
@@ -147,6 +146,13 @@ const formatDateForAPI = (dateString: string): string => {
 export function useEarthquakeData(filters: EarthquakeFilterVariables) {
   const { toast } = useToast();
 
+  // Create toast helper functions
+  const toastSuccess = (props: { title: string; description: string }) =>
+    toast({ ...props, variant: "default" });
+
+  const toastError = (props: { title: string; description: string }) =>
+    toast({ ...props, variant: "destructive" });
+
   // Prepare filter variables with properly formatted dates
   const preparedFilters = {
     ...filters,
@@ -164,51 +170,48 @@ export function useEarthquakeData(filters: EarthquakeFilterVariables) {
 
   const [addEarthquake, addResult] = useMutation(ADD_EARTHQUAKE, {
     onCompleted: () => {
-      toast({
+      toastSuccess({
         title: 'Success',
         description: 'Earthquake record added successfully',
       });
       queryResult.refetch();
     },
     onError: (error: ApolloError) => {
-      toast({
+      toastError({
         title: 'Error',
         description: `Failed to add earthquake: ${error.message}`,
-        variant: 'destructive',
       });
     },
   });
 
   const [updateEarthquake, updateResult] = useMutation(UPDATE_EARTHQUAKE, {
     onCompleted: () => {
-      toast({
+      toastSuccess({
         title: 'Success',
         description: 'Earthquake record updated successfully',
       });
       queryResult.refetch();
     },
     onError: (error: ApolloError) => {
-      toast({
+      toastError({
         title: 'Error',
         description: `Failed to update earthquake: ${error.message}`,
-        variant: 'destructive',
       });
     },
   });
 
   const [deleteEarthquake, deleteResult] = useMutation(DELETE_EARTHQUAKE, {
     onCompleted: () => {
-      toast({
+      toastSuccess({
         title: 'Success',
         description: 'Earthquake record deleted successfully',
       });
       queryResult.refetch();
     },
     onError: (error: ApolloError) => {
-      toast({
+      toastError({
         title: 'Error',
         description: `Failed to delete earthquake: ${error.message}`,
-        variant: 'destructive',
       });
     },
   });

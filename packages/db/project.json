@@ -15,7 +15,7 @@
         "tsConfig": "packages/db/tsconfig.build.json",
         "assets": ["packages/db/*.md"],
         "format": ["cjs"],
-        "generatePackageJson": true
+        "external": ["@prisma/client"]
       }
     },
     "prisma:generate": {

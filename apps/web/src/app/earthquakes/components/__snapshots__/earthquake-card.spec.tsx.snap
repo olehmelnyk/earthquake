@@ -1,0 +1,63 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EarthquakeCard > should match snapshot 1`] = `
+<div>
+  <div
+    class="card overflow-hidden"
+  >
+    <div
+      class="card-header flex flex-row items-start justify-between space-y-0 pb-2"
+    >
+      <div
+        class="space-y-1"
+      >
+        <div
+          class="card-title text-sm font-medium"
+          data-testid="location"
+        >
+          35.6762, 139.6503
+        </div>
+        <div
+          class="flex items-center space-x-2"
+        >
+          <span
+            data-testid="severity"
+          >
+            Moderate
+          </span>
+          <span
+            class="text-xs text-muted-foreground"
+          >
+            about 1 hour ago
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="card-content"
+    >
+      <div
+        class="text-2xl font-bold"
+        data-testid="magnitude"
+      >
+        6.5
+      </div>
+      <p
+        class="text-xs text-muted-foreground mt-1"
+      >
+        4/15/2023, 10:30:00 AM
+      </p>
+    </div>
+    <div
+      class="card-footer flex justify-between"
+    >
+      <button>
+        Edit
+      </button>
+      <button>
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+`;

@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
-import { type EarthquakeFilterValues } from '@earthquake/ui';
+import type { EarthquakeFilterValues } from '@earthquake/types';
 
 export interface SortConfig {
   field: string;

@@ -16,23 +16,22 @@
         "name": "next"
       }
     ],
+    "types": [
+      "node",
+      "jest"
+    ],
     "paths": {
       "@/*": [
         "./src/*"
       ]
-    },
-    "types": [
-      "node"
-    ]
+    }
   },
   "include": [
-    "../../dist/apps/web/.next/types/**/*.ts",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
     "next-env.d.ts",
-    "src/**/*.js",
-    "src/**/*.jsx",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/types.d.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [

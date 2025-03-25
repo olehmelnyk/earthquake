@@ -30,6 +30,7 @@
   - Pages: actual pages (in apps/web)
 
 ## Coding rules
+- Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.
 - For UI components
   - Mark the props of the component as read-only.
 - For test

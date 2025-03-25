@@ -14,7 +14,7 @@
         "tsConfig": "packages/graphql/tsconfig.build.json",
         "assets": ["packages/graphql/*.md"],
         "format": ["cjs"],
-        "generatePackageJson": true
+        "external": ["graphql", "graphql-tag"]
       }
     }
   }

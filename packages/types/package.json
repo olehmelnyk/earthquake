@@ -2,13 +2,26 @@
   "name": "@earthquake/types",
   "version": "0.0.1",
   "private": true,
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "types": "./index.d.ts",
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
   "scripts": {
     "build": "nx build types",
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "dependencies": {}
+  "dependencies": {
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.9"
+  }
 }

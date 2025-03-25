@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import dayjs from 'dayjs';
 import {
   Form,
   FormControl,
@@ -13,16 +11,16 @@ import {
   Input,
   Button,
   Card,
-  CardContent,
-  Separator,
-  earthquakeFormSchema,
-  type EarthquakeFormValues
+  CardContent
 } from '@earthquake/ui';
-import { Earthquake } from '../../components/EarthquakeTable';
+import {
+  earthquakeFormSchema,
+  type EarthquakeFormValues as EarthquakeFormValuesType
+} from '@earthquake/types';
 
 const formSchema = earthquakeFormSchema;
 
-type EarthquakeFormValues = z.infer<typeof formSchema>;
+type EarthquakeFormValues = EarthquakeFormValuesType;
 
 export interface EarthquakeFormProps {
   readonly defaultValues?: Partial<EarthquakeFormValues>;
@@ -41,8 +39,8 @@ export function EarthquakeForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       location: '',
-      magnitude: undefined,
-      date: new Date(),
+      magnitude: undefined as unknown as number,
+      date: new Date().toISOString(),
       ...defaultValues
     }
   });
@@ -61,10 +59,12 @@ export function EarthquakeForm({
 
   const magnitudeValue = form.watch('magnitude');
 
+  // Extract nested ternary into a function
   const getButtonText = () => {
     if (isSubmitting) return 'Saving...';
     return isEdit ? 'Update Earthquake' : 'Add Earthquake';
   };
+
   const buttonText = getButtonText();
 
   const magnitudeWarning = useMemo(() => {
@@ -145,11 +145,11 @@ export function EarthquakeForm({
                   <Input
                     type="datetime-local"
                     {...field}
-                    value={field.value instanceof Date
-                      ? field.value.toISOString().slice(0, 16)
-                      : ''}
+                    value={typeof field.value === 'string'
+                      ? field.value.slice(0, 16)
+                      : new Date(field.value).toISOString().slice(0, 16)}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      field.onChange(e.target.value ? new Date(e.target.value) : undefined);
+                      field.onChange(e.target.value ? e.target.value : '');
                     }}
                   />
                 </div>

@@ -32,11 +32,8 @@ export default defineConfig(() => ({
       transformMixedEsModules: true,
     },
     lib: {
-      // Multiple entry points
-      entry: {
-        index: 'src/index.ts',
-        schemas: 'src/schemas.ts'
-      },
+      // Single entry point
+      entry: 'src/index.ts',
       formats: ['es' as const],
     },
     rollupOptions: {
@@ -48,7 +45,8 @@ export default defineConfig(() => ({
         'next',
         'next/image',
         'next/link',
-        'next/navigation'
+        'next/navigation',
+        '@earthquake/types'
       ],
     },
   },
