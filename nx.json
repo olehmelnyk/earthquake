@@ -12,7 +12,7 @@
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
     ],
-    "sharedGlobals": []
+    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
   "plugins": [
     {
@@ -26,11 +26,23 @@
         "watchDepsTargetName": "watch-deps"
       }
     },
-    { "plugin": "@nx/playwright/plugin", "options": { "targetName": "e2e" } },
-    { "plugin": "@nx/eslint/plugin", "options": { "targetName": "lint" } },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "e2e"
+      }
+    },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      }
+    },
     {
       "plugin": "@nx/jest/plugin",
-      "options": { "targetName": "test" },
+      "options": {
+        "targetName": "test"
+      },
       "exclude": ["apps/api-e2e/**/*"]
     },
     {
@@ -60,8 +72,12 @@
     }
   ],
   "targetDefaults": {
-    "build": { "dependsOn": ["^build"] },
-    "e2e-ci--**/*": { "dependsOn": ["^build"] },
+    "build": {
+      "dependsOn": ["^build"]
+    },
+    "e2e-ci--**/*": {
+      "dependsOn": ["^build"]
+    },
     "@nx/esbuild:esbuild": {
       "cache": true,
       "dependsOn": ["^build"],
@@ -74,15 +90,30 @@
     }
   },
   "projects": {
-    "api": { "implicitDependencies": ["db", "graphql"] },
-    "web": { "implicitDependencies": ["graphql", "ui", "types"] }
+    "api": {
+      "implicitDependencies": ["db", "graphql"]
+    },
+    "web": {
+      "implicitDependencies": ["graphql", "ui", "types"]
+    }
   },
   "generators": {
-    "@nx/next": { "application": { "style": "tailwind", "linter": "eslint" } },
-    "@nx/react": { "library": { "unitTestRunner": "vitest" } }
+    "@nx/next": {
+      "application": {
+        "style": "tailwind",
+        "linter": "eslint"
+      }
+    },
+    "@nx/react": {
+      "library": {
+        "unitTestRunner": "vitest"
+      }
+    }
   },
   "release": {
-    "version": { "preVersionCommand": "pnpm dlx nx run-many -t build" }
+    "version": {
+      "preVersionCommand": "pnpm dlx nx run-many -t build"
+    }
   },
   "nxCloudId": "67e2f66d20aa0286adff8e09"
 }
